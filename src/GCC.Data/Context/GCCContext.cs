@@ -11,14 +11,14 @@ namespace GCC.Data.Context
 {
     public class GCCContext : DbContext
     {
-        DbSet<Consulta> Consultas { get; set; }
-        DbSet<CRM> CRMs { get; set; }
-        DbSet<DiaDeTrabalho> DiasDeTrabalho { get; set; }
-        DbSet<Especialidade> Especialidades { get; set; }
-        DbSet<Medico> Medicos { get; set; }
-        DbSet<Paciente> Pacientes { get; set; }
-        DbSet<Prontuario> Prontuarios { get; set; }
-        DbSet<Secretaria> Secretarias { get; set; }
+        public DbSet<Consulta> Consultas { get; set; }
+        public DbSet<CRM> CRMs { get; set; }
+        public DbSet<DiaDeTrabalho> DiasDeTrabalho { get; set; }
+        public DbSet<Especialidade> Especialidades { get; set; }
+        public DbSet<Medico> Medicos { get; set; }
+        public DbSet<Paciente> Pacientes { get; set; }
+        public DbSet<Prontuario> Prontuarios { get; set; }
+        public DbSet<Secretaria> Secretarias { get; set; }
 
         public GCCContext(DbContextOptions options) : base(options)
         {

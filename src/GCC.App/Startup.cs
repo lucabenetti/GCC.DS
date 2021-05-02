@@ -1,6 +1,8 @@
 using GCC.App.Data;
+using GCC.Business.Interfaces;
 using GCC.Business.Modelos.Identity;
 using GCC.Data.Context;
+using GCC.Data.Repository;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -42,6 +44,11 @@ namespace GCC.App
             services.AddDefaultIdentity<Usuario>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             services.AddControllersWithViews();
+
+            services.AddScoped<GCCContext>();
+            services.AddScoped<IConsultaRepository, ConsultaRepository>();
+            services.AddScoped<IMedicoRepository, MedicoRepository>();
+            services.AddScoped<IPacienteRepository, PacienteRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
