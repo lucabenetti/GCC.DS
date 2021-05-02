@@ -1,6 +1,6 @@
 using System;
 
-namespace GCC.App.Models
+namespace GCC.App.ViewModels
 {
     public class ErrorViewModel
     {
