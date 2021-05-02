@@ -24,8 +24,6 @@ namespace GCC.Data.Mapeamento
                    .IsRequired();
             builder.Property(s => s.Telefone)
                    .HasColumnType("varchar(11)");
-            builder.Property(s => s.Usuario)
-                   .IsRequired();
             builder.ToTable("Secretaria");
         }
     }

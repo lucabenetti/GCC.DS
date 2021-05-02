@@ -17,17 +17,11 @@ namespace GCC.Data.Mapeamento
             builder.Property(m => m.CPF)
                    .IsRequired()
                    .HasColumnType("varchar(11)");
-            builder.Property(m => m.CRM)
-                   .IsRequired();
             builder.Property(m => m.DataNascimento)
                    .IsRequired();
-            builder.Property(m => m.Disponibilidade)
-                   .IsRequired(false);
             builder.Property(m => m.Endereco)
                    .IsRequired()
                    .HasColumnType("varchar(200)");
-            builder.Property(m => m.Especialidade)
-                   .IsRequired();
             builder.Property(m => m.Nome)
                    .IsRequired()
                    .HasColumnType("varchar(200)");
@@ -35,8 +29,6 @@ namespace GCC.Data.Mapeamento
                    .IsRequired();
             builder.Property(m => m.Telefone)
                    .HasColumnType("varchar(11)");
-            builder.Property(m => m.Usuario)
-                   .IsRequired();
             builder.ToTable("Medico");
         }
     }

@@ -29,13 +29,9 @@ namespace GCC.Data.Mapeamento
                    .IsRequired();
             builder.Property(p => p.Telefone)
                    .HasColumnType("varchar(11)");
-            builder.Property(p => p.Usuario)
-                   .IsRequired();
             builder.Property(p => p.NomeDaMae)
                     .IsRequired()
                     .HasColumnType("varchar(200)");
-            builder.Property(p => p.Consultas)
-                    .IsRequired(false);
             builder.ToTable("Paciente");
         }
     }

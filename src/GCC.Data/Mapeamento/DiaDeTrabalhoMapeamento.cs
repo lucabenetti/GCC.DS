@@ -9,7 +9,6 @@ namespace GCC.Data.Mapeamento
         public void Configure(EntityTypeBuilder<DiaDeTrabalho> builder)
         {
             builder.HasKey(c => c.Id);
-            builder.Property(d => d.Consultas).IsRequired(false);
             builder.Property(d => d.Dia).IsRequired();
             builder.Property(d => d.HoraInicio).IsRequired();
             builder.Property(d => d.HoraInicioIntervalo).IsRequired();

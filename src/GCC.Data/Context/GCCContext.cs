@@ -33,11 +33,8 @@ namespace GCC.Data.Context
                 relationship.DeleteBehavior = DeleteBehavior.ClientSetNull;
             }
 
-            var user = modelBuilder.Entity<Usuario>();
-
-            user.Property(x => x.KABUM).IsRequired().HasMaxLength(200);
-
-            user.ToTable("AspNetUsers");
+            var usuarioEntidade = modelBuilder.Entity<Usuario>();
+            usuarioEntidade.ToTable("AspNetUsers");
 
             base.OnModelCreating(modelBuilder);
         }
