@@ -1,6 +1,6 @@
 ﻿namespace GCC.Business.Enums
 {
-    enum SexoEnum
+    public enum SexoEnum
     {
         Masculino,
         Feminino
