@@ -19,7 +19,6 @@ namespace GCC.Data.Repository
         public async Task<Paciente> ObtenhaPaciente(Guid id)
         {
             return await Db.Pacientes.AsNoTracking()
-                              .Include(p => p.Usuario)
                               .Include(p => p.Consultas)
                               .FirstOrDefaultAsync(p => p.Id == id);
         }

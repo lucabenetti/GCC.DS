@@ -1,5 +1,4 @@
 ﻿using GCC.Business.Modelos;
-using GCC.Business.Modelos.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -32,9 +31,6 @@ namespace GCC.Data.Context
             {
                 relationship.DeleteBehavior = DeleteBehavior.ClientSetNull;
             }
-
-            var usuarioEntidade = modelBuilder.Entity<Usuario>();
-            usuarioEntidade.ToTable("AspNetUsers");
 
             base.OnModelCreating(modelBuilder);
         }

@@ -1,6 +1,5 @@
 using GCC.App.Data;
 using GCC.Business.Interfaces;
-using GCC.Business.Modelos.Identity;
 using GCC.Data.Context;
 using GCC.Data.Repository;
 using Microsoft.AspNetCore.Builder;
@@ -41,7 +40,7 @@ namespace GCC.App
 
             services.AddDatabaseDeveloperPageExceptionFilter();
 
-            services.AddDefaultIdentity<Usuario>(options => options.SignIn.RequireConfirmedAccount = true)
+            services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             services.AddControllersWithViews();
 

@@ -19,7 +19,6 @@ namespace GCC.Data.Repository
                                      .Include(m => m.Especialidade)
                                      .Include(m => m.Disponibilidade)
                                      .Include(m => m.CRM)
-                                     .Include(m => m.Usuario)
                                      .FirstOrDefaultAsync(m => m.Id == id);
         }
     }

@@ -1,5 +1,4 @@
 ﻿using GCC.Business.Modelos;
-using GCC.Business.Modelos.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
