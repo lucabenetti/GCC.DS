@@ -1,5 +1,6 @@
 using GCC.App.Data;
 using GCC.Business.Interfaces;
+using GCC.Business.Servicos;
 using GCC.Data.Context;
 using GCC.Data.Repository;
 using Microsoft.AspNetCore.Builder;
@@ -47,6 +48,8 @@ namespace GCC.App
             services.AddAutoMapper(typeof(Startup));
 
             services.AddScoped<GCCContext>();
+            services.AddScoped<UserManager<IdentityUser>>();
+            services.AddScoped<IUsuarioService, UsuarioService>();
             services.AddScoped<IConsultaRepository, ConsultaRepository>();
             services.AddScoped<IMedicoRepository, MedicoRepository>();
             services.AddScoped<IPacienteRepository, PacienteRepository>();

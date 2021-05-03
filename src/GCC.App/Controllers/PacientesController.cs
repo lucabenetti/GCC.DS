@@ -7,34 +7,36 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using GCC.App.Data;
 using GCC.App.ViewModels;
+using AutoMapper;
+using Microsoft.AspNet.Identity;
+using GCC.Business.Interfaces;
+using Microsoft.AspNet.Identity.EntityFramework;
+using GCC.Business.Modelos;
 
 namespace GCC.App.Controllers
 {
     public class PacientesController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IPacienteRepository _pacienteRepository;
+        private readonly IMapper _mapper;
+        private readonly IUsuarioService _usuarioService;
 
-        public PacientesController(ApplicationDbContext context)
+        public PacientesController(IPacienteRepository pacienteRepository, IMapper mapper, IUsuarioService usuarioService)
         {
-            _context = context;
+            _pacienteRepository = pacienteRepository;
+            _mapper = mapper;
+            _usuarioService = usuarioService;
         }
 
-        // GET: Pacientes
         public async Task<IActionResult> Index()
         {
-            return View(await _context.PacienteViewModel.ToListAsync());
+            return View(_mapper.Map<IEnumerable<PacienteViewModel>>(await _pacienteRepository.ObterTodos()));
         }
 
-        // GET: Pacientes/Details/5
-        public async Task<IActionResult> Details(Guid? id)
+        public async Task<IActionResult> Details(Guid id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            var pacienteViewModel = await ObterPacientePorId(id);
 
-            var pacienteViewModel = await _context.PacienteViewModel
-                .FirstOrDefaultAsync(m => m.Id == id);
             if (pacienteViewModel == null)
             {
                 return NotFound();
@@ -43,90 +45,65 @@ namespace GCC.App.Controllers
             return View(pacienteViewModel);
         }
 
-        // GET: Pacientes/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Pacientes/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,UsuarioId,Nome,CPF,Sexo,Endereco,Telefone,DataNascimento,NomeDaMae")] PacienteViewModel pacienteViewModel)
+        public async Task<IActionResult> Create(PacienteViewModel pacienteViewModel)
         {
-            if (ModelState.IsValid)
-            {
-                pacienteViewModel.Id = Guid.NewGuid();
-                _context.Add(pacienteViewModel);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(pacienteViewModel);
+            //if (!ModelState.IsValid)
+            //{
+                //return View(pacienteViewModel);
+            //}
+
+            var resultado = await _usuarioService.CadastrarUsuario("teste2", "luca2@mail.com", "#snKBCD178");
+
+            var paciente = _mapper.Map<Paciente>(pacienteViewModel);
+            paciente.UsuarioId = resultado;
+            await _pacienteRepository.Adicionar(paciente);
+
+            return RedirectToAction("Index");
         }
 
-        // GET: Pacientes/Edit/5
-        public async Task<IActionResult> Edit(Guid? id)
+        public async Task<IActionResult> Edit(Guid id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            var pacienteViewModel = await ObterPacientePorId(id);
 
-            var pacienteViewModel = await _context.PacienteViewModel.FindAsync(id);
             if (pacienteViewModel == null)
             {
                 return NotFound();
             }
+
             return View(pacienteViewModel);
         }
 
-        // POST: Pacientes/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("Id,UsuarioId,Nome,CPF,Sexo,Endereco,Telefone,DataNascimento,NomeDaMae")] PacienteViewModel pacienteViewModel)
+        public async Task<IActionResult> Edit(Guid id, PacienteViewModel pacienteViewModel)
         {
             if (id != pacienteViewModel.Id)
             {
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                try
-                {
-                    _context.Update(pacienteViewModel);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!PacienteViewModelExists(pacienteViewModel.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+                return View(pacienteViewModel);
             }
-            return View(pacienteViewModel);
+
+            var paciente = _mapper.Map<Paciente>(pacienteViewModel);
+            await _pacienteRepository.Atualizar(paciente);
+
+            return RedirectToAction("Index");
         }
 
-        // GET: Pacientes/Delete/5
-        public async Task<IActionResult> Delete(Guid? id)
+        public async Task<IActionResult> Delete(Guid id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            var pacienteViewModel = ObterPacientePorId(id);
 
-            var pacienteViewModel = await _context.PacienteViewModel
-                .FirstOrDefaultAsync(m => m.Id == id);
             if (pacienteViewModel == null)
             {
                 return NotFound();
@@ -135,20 +112,25 @@ namespace GCC.App.Controllers
             return View(pacienteViewModel);
         }
 
-        // POST: Pacientes/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
-            var pacienteViewModel = await _context.PacienteViewModel.FindAsync(id);
-            _context.PacienteViewModel.Remove(pacienteViewModel);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            var pacienteViewModel = await ObterPacientePorId(id);
+
+            if (pacienteViewModel == null)
+            {
+                return NotFound();
+            }
+
+            await _pacienteRepository.Remover(id);
+
+            return RedirectToAction("Index");
         }
 
-        private bool PacienteViewModelExists(Guid id)
+        private async Task<PacienteViewModel> ObterPacientePorId(Guid id)
         {
-            return _context.PacienteViewModel.Any(e => e.Id == id);
+            return _mapper.Map<PacienteViewModel>(await _pacienteRepository.ObtenhaPaciente(id));
         }
     }
 }

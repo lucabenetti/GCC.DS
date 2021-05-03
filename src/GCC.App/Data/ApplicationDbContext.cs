@@ -19,6 +19,15 @@ namespace GCC.App.Data
         {
             base.OnModelCreating(modelBuilder);
 
+            modelBuilder.Ignore<ConsultaViewModel>();
+            modelBuilder.Ignore<CRMViewModel>();
+            modelBuilder.Ignore<DiaDeTrabalhoViewModel>();
+            modelBuilder.Ignore<ErrorViewModel>();
+            modelBuilder.Ignore<EspecialidadeViewModel>();
+            modelBuilder.Ignore<MedicoViewModel>();
+            modelBuilder.Ignore<PacienteViewModel>();
+            modelBuilder.Ignore<ProntuarioViewModel>();
+
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
         }
 

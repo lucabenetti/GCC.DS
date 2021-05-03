@@ -7,34 +7,35 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using GCC.App.Data;
 using GCC.App.ViewModels;
+using GCC.Business.Interfaces;
+using AutoMapper;
+using Microsoft.AspNetCore.Identity;
+using GCC.Business.Modelos;
 
 namespace GCC.App.Controllers
 {
     public class MedicosController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IMedicoRepository _medicoRepository;
+        private readonly IMapper _mapper;
+        private readonly IUsuarioService _usuarioService;
 
-        public MedicosController(ApplicationDbContext context)
+        public MedicosController(IMedicoRepository medicoRepository, IMapper mapper, IUsuarioService usuarioService)
         {
-            _context = context;
+            _medicoRepository = medicoRepository;
+            _mapper = mapper;
+            _usuarioService = usuarioService;
         }
 
-        // GET: Medicos
         public async Task<IActionResult> Index()
         {
-            return View(await _context.MedicoViewModel.ToListAsync());
+            return View(_mapper.Map<IEnumerable<MedicoViewModel>>(await _medicoRepository.ObterTodos()));
         }
 
-        // GET: Medicos/Details/5
-        public async Task<IActionResult> Details(Guid? id)
+        public async Task<IActionResult> Details(Guid id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            var medicoViewModel = await ObterMedicoPorId(id);
 
-            var medicoViewModel = await _context.MedicoViewModel
-                .FirstOrDefaultAsync(m => m.Id == id);
             if (medicoViewModel == null)
             {
                 return NotFound();
@@ -43,90 +44,67 @@ namespace GCC.App.Controllers
             return View(medicoViewModel);
         }
 
-        // GET: Medicos/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Medicos/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,UsuarioId,Nome,CPF,Sexo,Endereco,Telefone,DataNascimento")] MedicoViewModel medicoViewModel)
+        public async Task<IActionResult> Create(MedicoViewModel medicoViewModel)
         {
-            if (ModelState.IsValid)
-            {
-                medicoViewModel.Id = Guid.NewGuid();
-                _context.Add(medicoViewModel);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(medicoViewModel);
+            //if (!ModelState.IsValid)
+            //{
+            //    return View(medicoViewModel);
+            //}
+
+            var resultado = await _usuarioService.CadastrarUsuario("teste2", "luca2@mail.com", "#snKBCD178");
+
+
+            var medico = _mapper.Map<Medico>(medicoViewModel);
+            medico.UsuarioId = resultado;
+            await _medicoRepository.Adicionar(medico);
+
+
+            return RedirectToAction("Index");
         }
 
-        // GET: Medicos/Edit/5
-        public async Task<IActionResult> Edit(Guid? id)
+        public async Task<IActionResult> Edit(Guid id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            var medicoViewModel = await ObterMedicoPorId(id);
 
-            var medicoViewModel = await _context.MedicoViewModel.FindAsync(id);
             if (medicoViewModel == null)
             {
                 return NotFound();
             }
+
             return View(medicoViewModel);
         }
 
-        // POST: Medicos/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("Id,UsuarioId,Nome,CPF,Sexo,Endereco,Telefone,DataNascimento")] MedicoViewModel medicoViewModel)
+        public async Task<IActionResult> Edit(Guid id, MedicoViewModel medicoViewModel)
         {
             if (id != medicoViewModel.Id)
             {
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                try
-                {
-                    _context.Update(medicoViewModel);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!MedicoViewModelExists(medicoViewModel.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+                return View(medicoViewModel);
             }
-            return View(medicoViewModel);
+
+            var medico = _mapper.Map<Medico>(medicoViewModel);
+            await _medicoRepository.Atualizar(medico);
+
+            return RedirectToAction("Index");
         }
 
-        // GET: Medicos/Delete/5
-        public async Task<IActionResult> Delete(Guid? id)
+        public async Task<IActionResult> Delete(Guid id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            var medicoViewModel = ObterMedicoPorId(id);
 
-            var medicoViewModel = await _context.MedicoViewModel
-                .FirstOrDefaultAsync(m => m.Id == id);
             if (medicoViewModel == null)
             {
                 return NotFound();
@@ -135,20 +113,25 @@ namespace GCC.App.Controllers
             return View(medicoViewModel);
         }
 
-        // POST: Medicos/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
-            var medicoViewModel = await _context.MedicoViewModel.FindAsync(id);
-            _context.MedicoViewModel.Remove(medicoViewModel);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            var medicoViewModel = await ObterMedicoPorId(id);
+
+            if (medicoViewModel == null)
+            {
+                return NotFound();
+            }
+
+            await _medicoRepository.Remover(id);
+
+            return RedirectToAction("Index");
         }
 
-        private bool MedicoViewModelExists(Guid id)
+        private async Task<MedicoViewModel> ObterMedicoPorId(Guid id)
         {
-            return _context.MedicoViewModel.Any(e => e.Id == id);
+            return _mapper.Map<MedicoViewModel>(await _medicoRepository.ObtenhaMedico(id));
         }
     }
 }
