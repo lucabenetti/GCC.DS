@@ -26,6 +26,20 @@ CREATE TABLE [Especialidade] (
 );
 GO
 
+CREATE TABLE [Paciente] (
+    [Id] uniqueidentifier NOT NULL,
+    [NomeDaMae] varchar(200) NOT NULL,
+    [UsuarioId] uniqueidentifier NOT NULL,
+    [Nome] varchar(200) NOT NULL,
+    [CPF] varchar(11) NOT NULL,
+    [Sexo] int NOT NULL,
+    [Endereco] varchar(200) NOT NULL,
+    [Telefone] varchar(11) NULL,
+    [DataNascimento] datetime2 NOT NULL,
+    CONSTRAINT [PK_Paciente] PRIMARY KEY ([Id])
+);
+GO
+
 CREATE TABLE [Prontuario] (
     [Id] uniqueidentifier NOT NULL,
     [Descricao] varchar(500) NOT NULL,
@@ -33,32 +47,16 @@ CREATE TABLE [Prontuario] (
 );
 GO
 
-CREATE TABLE [Paciente] (
-    [Id] uniqueidentifier NOT NULL,
-    [NomeDaMae] varchar(200) NOT NULL,
-    [UsuarioId] nvarchar(450) NULL,
-    [Nome] varchar(200) NOT NULL,
-    [CPF] varchar(11) NOT NULL,
-    [Sexo] int NOT NULL,
-    [Endereco] varchar(200) NOT NULL,
-    [Telefone] varchar(11) NULL,
-    [DataNascimento] datetime2 NOT NULL,
-    CONSTRAINT [PK_Paciente] PRIMARY KEY ([Id]),
-    CONSTRAINT [FK_Paciente_AspNetUsers_UsuarioId] FOREIGN KEY ([UsuarioId]) REFERENCES [AspNetUsers] ([Id]) ON DELETE NO ACTION
-);
-GO
-
 CREATE TABLE [Secretaria] (
     [Id] uniqueidentifier NOT NULL,
-    [UsuarioId] nvarchar(450) NULL,
+    [UsuarioId] uniqueidentifier NOT NULL,
     [Nome] varchar(200) NOT NULL,
     [CPF] varchar(11) NOT NULL,
     [Sexo] int NOT NULL,
     [Endereco] varchar(200) NOT NULL,
     [Telefone] varchar(11) NULL,
     [DataNascimento] datetime2 NOT NULL,
-    CONSTRAINT [PK_Secretaria] PRIMARY KEY ([Id]),
-    CONSTRAINT [FK_Secretaria_AspNetUsers_UsuarioId] FOREIGN KEY ([UsuarioId]) REFERENCES [AspNetUsers] ([Id]) ON DELETE NO ACTION
+    CONSTRAINT [PK_Secretaria] PRIMARY KEY ([Id])
 );
 GO
 
@@ -66,7 +64,7 @@ CREATE TABLE [Medico] (
     [Id] uniqueidentifier NOT NULL,
     [CRMId] uniqueidentifier NULL,
     [EspecialidadeId] uniqueidentifier NULL,
-    [UsuarioId] nvarchar(450) NULL,
+    [UsuarioId] uniqueidentifier NOT NULL,
     [Nome] varchar(200) NOT NULL,
     [CPF] varchar(11) NOT NULL,
     [Sexo] int NOT NULL,
@@ -74,7 +72,6 @@ CREATE TABLE [Medico] (
     [Telefone] varchar(11) NULL,
     [DataNascimento] datetime2 NOT NULL,
     CONSTRAINT [PK_Medico] PRIMARY KEY ([Id]),
-    CONSTRAINT [FK_Medico_AspNetUsers_UsuarioId] FOREIGN KEY ([UsuarioId]) REFERENCES [AspNetUsers] ([Id]) ON DELETE NO ACTION,
     CONSTRAINT [FK_Medico_CRM_CRMId] FOREIGN KEY ([CRMId]) REFERENCES [CRM] ([Id]) ON DELETE NO ACTION,
     CONSTRAINT [FK_Medico_Especialidade_EspecialidadeId] FOREIGN KEY ([EspecialidadeId]) REFERENCES [Especialidade] ([Id]) ON DELETE NO ACTION
 );
@@ -131,17 +128,8 @@ GO
 CREATE INDEX [IX_Medico_EspecialidadeId] ON [Medico] ([EspecialidadeId]);
 GO
 
-CREATE INDEX [IX_Medico_UsuarioId] ON [Medico] ([UsuarioId]);
-GO
-
-CREATE INDEX [IX_Paciente_UsuarioId] ON [Paciente] ([UsuarioId]);
-GO
-
-CREATE INDEX [IX_Secretaria_UsuarioId] ON [Secretaria] ([UsuarioId]);
-GO
-
 INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
-VALUES (N'20210502213612_Initial', N'5.0.5');
+VALUES (N'20210503005702_Initial', N'5.0.5');
 GO
 
 COMMIT;
