@@ -7,7 +7,7 @@ namespace GCC.Business.Modelos
     public class Medico : PessoaAbstrata
     {
         public CRM CRM { get; set; }
-        public Especialidade Especialidade { get; set; }
+        public string Especialidade { get; set; }
         public JornadaDeTrabalho JornadaDeTrabalho { get; set; }
     }
 }

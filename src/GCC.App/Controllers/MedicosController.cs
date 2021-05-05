@@ -57,6 +57,7 @@ namespace GCC.App.Controllers
             //{
             //    return View(medicoViewModel);
             //}
+            var medico = _mapper.Map<Medico>(medicoViewModel);
 
             var usuarioIdentity = await _usuarioService.CadastrarUsuario("teste2", "luca2@mail.com", "#snKBCD178");
 
@@ -64,7 +65,6 @@ namespace GCC.App.Controllers
             {
 
             }
-            var medico = _mapper.Map<Medico>(medicoViewModel);
             medico.UsuarioId = Guid.Parse(usuarioIdentity.Id);
             await _medicoRepository.Adicionar(medico);
 

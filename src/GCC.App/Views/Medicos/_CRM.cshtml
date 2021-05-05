@@ -1,0 +1,13 @@
+﻿@model GCC.App.ViewModels.MedicoViewModel
+@using GCC.Business.Enums
+
+<div class="form-group">
+    <label asp-for="CRM.Numero" class="control-label"></label>
+    <input asp-for="CRM.Numero" class="form-control" />
+    <span asp-validation-for="CRM.Numero" class="text-danger"></span>
+    <label asp-for="CRM.UF" class="control-label"></label>
+    <select asp-for="CRM.UF" class="form-control" asp-items="@Html.GetEnumSelectList<UFEnum>()">
+        <option></option>
+    </select>
+    <span asp-validation-for="CRM.UF" class="text-danger"></span>
+</div>

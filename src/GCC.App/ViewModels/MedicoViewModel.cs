@@ -15,6 +15,9 @@ namespace GCC.App.ViewModels
         [HiddenInput]
         public Guid UsuarioId { get; set; }
 
+        public string Email { get; set; }
+        public string Senha { get; set; }
+
         [Required(ErrorMessage = "O campo {0} é obrigatório")]
         [StringLength(200, ErrorMessage = "O campo {0} precisa ter entre {2} e {1} caracteres", MinimumLength = 1)]
         public string Nome { get; set; }
@@ -36,8 +39,8 @@ namespace GCC.App.ViewModels
         [Required(ErrorMessage = "O campo {0} é obrigatório")]
         [DisplayName("Data de nascimento")]
         public DateTime DataNascimento { get; set; }
-        public CRMViewModel CRM { get; set; }
-        public EspecialidadeViewModel Especialidade { get; set; }
         public JornadaDeTrabalhoViewModel JornadaDeTrabalho { get; set; }
+        public CRMViewModel CRM { get; set; }
+        public string Especialidade { get; set; }
     }
 }
