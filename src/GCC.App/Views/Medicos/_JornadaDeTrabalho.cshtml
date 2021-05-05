@@ -1,0 +1,57 @@
+﻿@model GCC.App.ViewModels.MedicoViewModel
+
+<div class="form-group form-check">
+    <label class="form-check-label">
+        <input class="form-check-input" asp-for="JornadaDeTrabalho.Domingo" /> @Html.DisplayNameFor(model => model.JornadaDeTrabalho.Domingo)
+    </label>
+</div>
+<div class="form-group form-check">
+    <label class="form-check-label">
+        <input class="form-check-input" asp-for="JornadaDeTrabalho.Segunda" /> @Html.DisplayNameFor(model => model.JornadaDeTrabalho.Segunda)
+    </label>
+</div>
+<div class="form-group form-check">
+    <label class="form-check-label">
+        <input class="form-check-input" asp-for="JornadaDeTrabalho.Terca" /> @Html.DisplayNameFor(model => model.JornadaDeTrabalho.Terca)
+    </label>
+</div>
+<div class="form-group form-check">
+    <label class="form-check-label">
+        <input class="form-check-input" asp-for="JornadaDeTrabalho.Quarta" /> @Html.DisplayNameFor(model => model.JornadaDeTrabalho.Quarta)
+    </label>
+</div>
+<div class="form-group form-check">
+    <label class="form-check-label">
+        <input class="form-check-input" asp-for="JornadaDeTrabalho.Quinta" /> @Html.DisplayNameFor(model => model.JornadaDeTrabalho.Quinta)
+    </label>
+</div>
+<div class="form-group form-check">
+    <label class="form-check-label">
+        <input class="form-check-input" asp-for="JornadaDeTrabalho.Sexta" /> @Html.DisplayNameFor(model => model.JornadaDeTrabalho.Sexta)
+    </label>
+</div>
+<div class="form-group form-check">
+    <label class="form-check-label">
+        <input class="form-check-input" asp-for="JornadaDeTrabalho.Sabado" /> @Html.DisplayNameFor(model => model.JornadaDeTrabalho.Sabado)
+    </label>
+</div>
+<div class="form-group">
+    <label asp-for="JornadaDeTrabalho.HoraInicio" class="control-label"></label>
+    <input type="time" asp-for="JornadaDeTrabalho.HoraInicio" class="form-control" />
+    <span asp-validation-for="JornadaDeTrabalho.HoraInicio" class="text-danger"></span>
+</div>
+<div class="form-group">
+    <label asp-for="JornadaDeTrabalho.HoraFim" class="control-label"></label>
+    <input type="time" asp-for="JornadaDeTrabalho.HoraFim" class="form-control" />
+    <span asp-validation-for="JornadaDeTrabalho.HoraFim" class="text-danger"></span>
+</div>
+<div class="form-group">
+    <label asp-for="JornadaDeTrabalho.HoraInicioIntervalo" class="control-label"></label>
+    <input type="time" asp-for="JornadaDeTrabalho.HoraInicioIntervalo" class="form-control" />
+    <span asp-validation-for="JornadaDeTrabalho.HoraInicioIntervalo" class="text-danger"></span>
+</div>
+<div class="form-group">
+    <label asp-for="JornadaDeTrabalho.HoraFimIntervalo" class="control-label"></label>
+    <input type="time" asp-for="JornadaDeTrabalho.HoraFimIntervalo" class="form-control" />
+    <span asp-validation-for="JornadaDeTrabalho.HoraFimIntervalo" class="text-danger"></span>
+</div>

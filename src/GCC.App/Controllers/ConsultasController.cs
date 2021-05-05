@@ -7,34 +7,32 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using GCC.App.Data;
 using GCC.App.ViewModels;
+using GCC.Business.Interfaces;
+using AutoMapper;
+using GCC.Business.Modelos;
 
 namespace GCC.App.Controllers
 {
     public class ConsultasController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IConsultaRepository _consultaRepository;
+        private readonly IMapper _mapper;
 
-        public ConsultasController(ApplicationDbContext context)
+        public ConsultasController(IConsultaRepository consultaRepository, IMapper mapper)
         {
-            _context = context;
+            _consultaRepository = consultaRepository;
+            _mapper = mapper;
         }
 
-        // GET: Consulta
         public async Task<IActionResult> Index()
         {
-            return View(await _context.ConsultaViewModel.ToListAsync());
+            return View(_mapper.Map<IEnumerable<ConsultaViewModel>>(await _consultaRepository.ObterTodos()));
         }
 
-        // GET: Consulta/Details/5
-        public async Task<IActionResult> Details(Guid? id)
+        public async Task<IActionResult> Details(Guid id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            var consultaViewModel = await ObterConsultaPorId(id);
 
-            var consultaViewModel = await _context.ConsultaViewModel
-                .FirstOrDefaultAsync(m => m.Id == id);
             if (consultaViewModel == null)
             {
                 return NotFound();
@@ -43,90 +41,65 @@ namespace GCC.App.Controllers
             return View(consultaViewModel);
         }
 
-        // GET: Consulta/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Consulta/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Data,Duracao,Realizada")] ConsultaViewModel consultaViewModel)
+        public async Task<IActionResult> Create(ConsultaViewModel consultaViewModel)
         {
-            if (ModelState.IsValid)
-            {
-                consultaViewModel.Id = Guid.NewGuid();
-                _context.Add(consultaViewModel);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(consultaViewModel);
+            //if (!ModelState.IsValid)
+            //{
+            //    consultaViewModel.Id = Guid.NewGuid();
+            //    _context.Add(consultaViewModel);
+            //    await _context.SaveChangesAsync();
+            //    return View(consultaViewModel);
+            //}
+
+            var consulta = _mapper.Map<Consulta>(consultaViewModel);
+            await _consultaRepository.Adicionar(consulta);
+
+            return RedirectToAction("Index");
         }
 
-        // GET: Consulta/Edit/5
-        public async Task<IActionResult> Edit(Guid? id)
+        public async Task<IActionResult> Edit(Guid id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            var consultaViewModel = await ObterConsultaPorId(id);
 
-            var consultaViewModel = await _context.ConsultaViewModel.FindAsync(id);
             if (consultaViewModel == null)
             {
                 return NotFound();
             }
+
             return View(consultaViewModel);
         }
 
-        // POST: Consulta/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("Id,Data,Duracao,Realizada")] ConsultaViewModel consultaViewModel)
+        public async Task<IActionResult> Edit(Guid id, ConsultaViewModel consultaViewModel)
         {
             if (id != consultaViewModel.Id)
             {
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                try
-                {
-                    _context.Update(consultaViewModel);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!ConsultaViewModelExists(consultaViewModel.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+                return View(consultaViewModel);
             }
-            return View(consultaViewModel);
+
+            var consulta = _mapper.Map<Consulta>(consultaViewModel);
+            await _consultaRepository.Atualizar(consulta);
+
+            return RedirectToAction("Index");
         }
 
-        // GET: Consulta/Delete/5
-        public async Task<IActionResult> Delete(Guid? id)
+        public async Task<IActionResult> Delete(Guid id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            var consultaViewModel = ObterConsultaPorId(id);
 
-            var consultaViewModel = await _context.ConsultaViewModel
-                .FirstOrDefaultAsync(m => m.Id == id);
             if (consultaViewModel == null)
             {
                 return NotFound();
@@ -135,20 +108,25 @@ namespace GCC.App.Controllers
             return View(consultaViewModel);
         }
 
-        // POST: Consulta/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
-            var consultaViewModel = await _context.ConsultaViewModel.FindAsync(id);
-            _context.ConsultaViewModel.Remove(consultaViewModel);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            var consultaViewModel = await ObterConsultaPorId(id);
+
+            if (consultaViewModel == null)
+            {
+                return NotFound();
+            }
+
+            await _consultaRepository.Remover(id);
+
+            return RedirectToAction("Index");
         }
 
-        private bool ConsultaViewModelExists(Guid id)
+        private async Task<ConsultaViewModel> ObterConsultaPorId(Guid id)
         {
-            return _context.ConsultaViewModel.Any(e => e.Id == id);
+            return _mapper.Map<ConsultaViewModel>(await _consultaRepository.ObtenhaConsulta(id));
         }
     }
 }

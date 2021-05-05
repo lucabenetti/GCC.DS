@@ -8,6 +8,6 @@ namespace GCC.Business.Modelos
     {
         public CRM CRM { get; set; }
         public Especialidade Especialidade { get; set; }
-        public List<DiaDeTrabalho> Disponibilidade { get; set; }
+        public JornadaDeTrabalho JornadaDeTrabalho { get; set; }
     }
 }

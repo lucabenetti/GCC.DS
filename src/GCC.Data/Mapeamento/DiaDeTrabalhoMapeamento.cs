@@ -4,12 +4,11 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace GCC.Data.Mapeamento
 {
-    public class DiaDeTrabalhoMapeamento : IEntityTypeConfiguration<DiaDeTrabalho>
+    public class DiaDeTrabalhoMapeamento : IEntityTypeConfiguration<JornadaDeTrabalho>
     {
-        public void Configure(EntityTypeBuilder<DiaDeTrabalho> builder)
+        public void Configure(EntityTypeBuilder<JornadaDeTrabalho> builder)
         {
             builder.HasKey(c => c.Id);
-            builder.Property(d => d.Dia).IsRequired();
             builder.Property(d => d.HoraInicio).IsRequired();
             builder.Property(d => d.HoraInicioIntervalo).IsRequired();
             builder.Property(d => d.HoraFimIntervalo).IsRequired();

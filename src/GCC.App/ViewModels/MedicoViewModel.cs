@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace GCC.App.ViewModels
@@ -32,9 +33,11 @@ namespace GCC.App.ViewModels
         [StringLength(200, ErrorMessage = "O campo {0} precisa ter entre {2} e {1} caracteres", MinimumLength = 1)]
         public string Telefone { get; set; }
 
+        [Required(ErrorMessage = "O campo {0} é obrigatório")]
+        [DisplayName("Data de nascimento")]
         public DateTime DataNascimento { get; set; }
         public CRMViewModel CRM { get; set; }
         public EspecialidadeViewModel Especialidade { get; set; }
-        public List<DiaDeTrabalhoViewModel> Disponibilidade { get; set; }
+        public JornadaDeTrabalhoViewModel JornadaDeTrabalho { get; set; }
     }
 }

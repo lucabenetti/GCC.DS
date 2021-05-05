@@ -10,7 +10,7 @@ namespace GCC.App.AutoMapper
         {
             CreateMap<Consulta, ConsultaViewModel>().ReverseMap();
             CreateMap<CRM, CRMViewModel>().ReverseMap();
-            CreateMap<DiaDeTrabalho, DiaDeTrabalhoViewModel>().ReverseMap();
+            CreateMap<JornadaDeTrabalho, JornadaDeTrabalhoViewModel>().ReverseMap();
             CreateMap<Especialidade, EspecialidadeViewModel>().ReverseMap();
             CreateMap<Medico, MedicoViewModel>().ReverseMap();
             CreateMap<Paciente, PacienteViewModel>().ReverseMap();

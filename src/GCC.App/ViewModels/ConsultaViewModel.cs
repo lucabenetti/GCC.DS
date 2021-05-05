@@ -8,7 +8,6 @@ namespace GCC.App.ViewModels
 {
     public class ConsultaViewModel
     {
-        [Key]
         public Guid Id { get; set; }
         public DateTime Data { get; set; }
         public TimeSpan Duracao { get; set; }

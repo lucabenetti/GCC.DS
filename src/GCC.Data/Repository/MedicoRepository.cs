@@ -17,7 +17,7 @@ namespace GCC.Data.Repository
         {
             return await Db.Medicos.AsNoTracking()
                                      .Include(m => m.Especialidade)
-                                     .Include(m => m.Disponibilidade)
+                                     .Include(m => m.JornadaDeTrabalho)
                                      .Include(m => m.CRM)
                                      .FirstOrDefaultAsync(m => m.Id == id);
         }

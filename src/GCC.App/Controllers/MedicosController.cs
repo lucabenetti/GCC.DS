@@ -58,11 +58,14 @@ namespace GCC.App.Controllers
             //    return View(medicoViewModel);
             //}
 
-            var resultado = await _usuarioService.CadastrarUsuario("teste2", "luca2@mail.com", "#snKBCD178");
+            var usuarioIdentity = await _usuarioService.CadastrarUsuario("teste2", "luca2@mail.com", "#snKBCD178");
 
+            if(usuarioIdentity != null)
+            {
 
+            }
             var medico = _mapper.Map<Medico>(medicoViewModel);
-            medico.UsuarioId = resultado;
+            medico.UsuarioId = Guid.Parse(usuarioIdentity.Id);
             await _medicoRepository.Adicionar(medico);
 
 

@@ -12,7 +12,7 @@ namespace GCC.Business.Servicos
         {
             _userManager = userManager;
         }
-        public async Task<Guid> CadastrarUsuario(string email, string username, string password)
+        public async Task<IdentityUser> CadastrarUsuario(string email, string username, string password)
         {
             var usuario = new IdentityUser
             {
@@ -20,9 +20,14 @@ namespace GCC.Business.Servicos
                 UserName  = username
             };
 
-            await _userManager.CreateAsync(usuario, password);
+            var retorno = await _userManager.CreateAsync(usuario, password);
 
-            return Guid.Parse(usuario.Id);
+            if(!retorno.Succeeded)
+            {
+                return null;
+            }
+
+            return usuario;
         }
     }
 }
