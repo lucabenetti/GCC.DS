@@ -19,7 +19,7 @@ CREATE TABLE [CRM] (
 );
 GO
 
-CREATE TABLE [DiaDeTrabalho] (
+CREATE TABLE [JornadaDeTrabalho] (
     [Id] uniqueidentifier NOT NULL,
     [Domingo] bit NOT NULL,
     [Segunda] bit NOT NULL,
@@ -32,7 +32,7 @@ CREATE TABLE [DiaDeTrabalho] (
     [HoraFim] datetime2 NOT NULL,
     [HoraInicioIntervalo] datetime2 NOT NULL,
     [HoraFimIntervalo] datetime2 NOT NULL,
-    CONSTRAINT [PK_DiaDeTrabalho] PRIMARY KEY ([Id])
+    CONSTRAINT [PK_JornadaDeTrabalho] PRIMARY KEY ([Id])
 );
 GO
 
@@ -44,7 +44,7 @@ CREATE TABLE [Paciente] (
     [CPF] varchar(11) NOT NULL,
     [Sexo] int NOT NULL,
     [Endereco] varchar(200) NOT NULL,
-    [Telefone] varchar(11) NULL,
+    [Telefone] varchar(11) NOT NULL,
     [DataNascimento] datetime2 NOT NULL,
     CONSTRAINT [PK_Paciente] PRIMARY KEY ([Id])
 );
@@ -64,7 +64,7 @@ CREATE TABLE [Secretaria] (
     [CPF] varchar(11) NOT NULL,
     [Sexo] int NOT NULL,
     [Endereco] varchar(200) NOT NULL,
-    [Telefone] varchar(11) NULL,
+    [Telefone] varchar(11) NOT NULL,
     [DataNascimento] datetime2 NOT NULL,
     CONSTRAINT [PK_Secretaria] PRIMARY KEY ([Id])
 );
@@ -80,11 +80,11 @@ CREATE TABLE [Medico] (
     [CPF] varchar(11) NOT NULL,
     [Sexo] int NOT NULL,
     [Endereco] varchar(200) NOT NULL,
-    [Telefone] varchar(11) NULL,
+    [Telefone] varchar(11) NOT NULL,
     [DataNascimento] datetime2 NOT NULL,
     CONSTRAINT [PK_Medico] PRIMARY KEY ([Id]),
     CONSTRAINT [FK_Medico_CRM_CRMId] FOREIGN KEY ([CRMId]) REFERENCES [CRM] ([Id]) ON DELETE NO ACTION,
-    CONSTRAINT [FK_Medico_DiaDeTrabalho_JornadaDeTrabalhoId] FOREIGN KEY ([JornadaDeTrabalhoId]) REFERENCES [DiaDeTrabalho] ([Id]) ON DELETE NO ACTION
+    CONSTRAINT [FK_Medico_JornadaDeTrabalho_JornadaDeTrabalhoId] FOREIGN KEY ([JornadaDeTrabalhoId]) REFERENCES [JornadaDeTrabalho] ([Id]) ON DELETE NO ACTION
 );
 GO
 
@@ -119,7 +119,7 @@ CREATE INDEX [IX_Medico_JornadaDeTrabalhoId] ON [Medico] ([JornadaDeTrabalhoId])
 GO
 
 INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
-VALUES (N'20210508144950_Initial', N'5.0.5');
+VALUES (N'20210508202428_Initial', N'5.0.5');
 GO
 
 COMMIT;

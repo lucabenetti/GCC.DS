@@ -1,5 +1,4 @@
-﻿using GCC.App.Extensions;
-using GCC.Business.Modelos;
+﻿using GCC.Business.Modelos;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -20,9 +19,9 @@ namespace GCC.App.ViewModels
         [EmailAddress]
         public string Email { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "O campo {0} é obrigatório")]
+        [StringLength(200, ErrorMessage = "O campo {0} precisa ter entre {2} e {1} caracteres", MinimumLength = 6)]
         [DataType(DataType.Password)]
-        [Password]
         public string Senha { get; set; }
 
         [Required(ErrorMessage = "O campo {0} é obrigatório")]
@@ -30,24 +29,23 @@ namespace GCC.App.ViewModels
         public string Nome { get; set; }
 
         [Required(ErrorMessage = "O campo {0} é obrigatório")]
-        [StringLength(200, ErrorMessage = "O campo {0} precisa ter entre {2} e {1} caracteres", MinimumLength = 1)]
-        public string CPF { get; set; }
+        public int CPF { get; set; }
 
         public int Sexo { get; set; }
 
         [Required(ErrorMessage = "O campo {0} é obrigatório")]
-        [StringLength(200, ErrorMessage = "O campo {0} precisa ter entre {2} e {1} caracteres", MinimumLength = 1)]
         public string Endereco { get; set; }
 
         [Required(ErrorMessage = "O campo {0} é obrigatório")]
-        [StringLength(200, ErrorMessage = "O campo {0} precisa ter entre {2} e {1} caracteres", MinimumLength = 1)]
-        public string Telefone { get; set; }
+        public int Telefone { get; set; }
 
         [Required(ErrorMessage = "O campo {0} é obrigatório")]
         [DisplayName("Data de nascimento")]
         public DateTime DataNascimento { get; set; }
         public JornadaDeTrabalhoViewModel JornadaDeTrabalho { get; set; }
         public CRMViewModel CRM { get; set; }
+
+        [Required(ErrorMessage = "O campo {0} é obrigatório")]
         public string Especialidade { get; set; }
     }
 }

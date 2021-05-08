@@ -1,5 +1,6 @@
 ﻿@model IEnumerable<GCC.App.ViewModels.MedicoViewModel>
 @using GCC.Business.Enums
+@using GCC.App.Extensions 
 
 @{
     ViewData["Title"] = "Médicos";
@@ -42,7 +43,7 @@
                     @Html.DisplayFor(modelItem => item.Nome)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.CPF)
+                    @item.CPF.FormataCPF()
                 </td>
                 <td>
                     @Enum.GetName(typeof(SexoEnum), item.Sexo)
@@ -51,10 +52,10 @@
                     @Html.DisplayFor(modelItem => item.Endereco)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Telefone)
+                    @item.Telefone.FormataTelefone()
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.DataNascimento)
+                    @item.DataNascimento.ToShortDateString()
                 </td>
                 <td>
                     <a asp-action="Edit" asp-route-id="@item.Id">Editar</a> |

@@ -22,7 +22,7 @@ namespace GCC.App.ViewModels
 
         [Required(ErrorMessage = "O campo {0} é obrigatório")]
         [StringLength(200, ErrorMessage = "O campo {0} precisa ter entre {2} e {1} caracteres", MinimumLength = 1)]
-        public string CPF { get; set; }
+        public int CPF { get; set; }
 
         [Required(ErrorMessage = "O campo {0} é obrigatório")]
         public int Sexo { get; set; }
@@ -33,7 +33,7 @@ namespace GCC.App.ViewModels
 
         [Required(ErrorMessage = "O campo {0} é obrigatório")]
         [StringLength(200, ErrorMessage = "O campo {0} precisa ter entre {2} e {1} caracteres", MinimumLength = 1)]
-        public string Telefone { get; set; }
+        public int Telefone { get; set; }
 
         public DateTime DataNascimento { get; set; }
 

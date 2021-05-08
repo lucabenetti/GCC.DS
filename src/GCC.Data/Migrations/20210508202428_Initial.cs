@@ -21,7 +21,7 @@ namespace GCC.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "DiaDeTrabalho",
+                name: "JornadaDeTrabalho",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -39,7 +39,7 @@ namespace GCC.Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_DiaDeTrabalho", x => x.Id);
+                    table.PrimaryKey("PK_JornadaDeTrabalho", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -53,7 +53,7 @@ namespace GCC.Data.Migrations
                     CPF = table.Column<string>(type: "varchar(11)", nullable: false),
                     Sexo = table.Column<int>(type: "int", nullable: false),
                     Endereco = table.Column<string>(type: "varchar(200)", nullable: false),
-                    Telefone = table.Column<string>(type: "varchar(11)", nullable: true),
+                    Telefone = table.Column<string>(type: "varchar(11)", nullable: false),
                     DataNascimento = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
@@ -83,7 +83,7 @@ namespace GCC.Data.Migrations
                     CPF = table.Column<string>(type: "varchar(11)", nullable: false),
                     Sexo = table.Column<int>(type: "int", nullable: false),
                     Endereco = table.Column<string>(type: "varchar(200)", nullable: false),
-                    Telefone = table.Column<string>(type: "varchar(11)", nullable: true),
+                    Telefone = table.Column<string>(type: "varchar(11)", nullable: false),
                     DataNascimento = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
@@ -104,7 +104,7 @@ namespace GCC.Data.Migrations
                     CPF = table.Column<string>(type: "varchar(11)", nullable: false),
                     Sexo = table.Column<int>(type: "int", nullable: false),
                     Endereco = table.Column<string>(type: "varchar(200)", nullable: false),
-                    Telefone = table.Column<string>(type: "varchar(11)", nullable: true),
+                    Telefone = table.Column<string>(type: "varchar(11)", nullable: false),
                     DataNascimento = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
@@ -117,9 +117,9 @@ namespace GCC.Data.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Medico_DiaDeTrabalho_JornadaDeTrabalhoId",
+                        name: "FK_Medico_JornadaDeTrabalho_JornadaDeTrabalhoId",
                         column: x => x.JornadaDeTrabalhoId,
-                        principalTable: "DiaDeTrabalho",
+                        principalTable: "JornadaDeTrabalho",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -206,7 +206,7 @@ namespace GCC.Data.Migrations
                 name: "CRM");
 
             migrationBuilder.DropTable(
-                name: "DiaDeTrabalho");
+                name: "JornadaDeTrabalho");
         }
     }
 }

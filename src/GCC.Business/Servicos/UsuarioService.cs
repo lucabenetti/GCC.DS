@@ -16,8 +16,7 @@ namespace GCC.Business.Servicos
         {
             var usuario = new IdentityUser
             {
-                Email = email,
-                UserName  = username
+                Email = email
             };
 
             var retorno = await _userManager.CreateAsync(usuario, password);
@@ -28,6 +27,11 @@ namespace GCC.Business.Servicos
             }
 
             return usuario;
+        }
+
+        public async Task<IdentityUser> ObtenhaUsuario(Guid id)
+        {
+            return await _userManager.FindByIdAsync(id.ToString()); ;
         }
     }
 }

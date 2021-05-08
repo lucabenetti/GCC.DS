@@ -112,7 +112,7 @@ namespace GCC.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("DiaDeTrabalho");
+                    b.ToTable("JornadaDeTrabalho");
                 });
 
             modelBuilder.Entity("GCC.Business.Modelos.Medico", b =>
@@ -149,6 +149,7 @@ namespace GCC.Data.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Telefone")
+                        .IsRequired()
                         .HasColumnType("varchar(11)");
 
                     b.Property<Guid>("UsuarioId")
@@ -192,6 +193,7 @@ namespace GCC.Data.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Telefone")
+                        .IsRequired()
                         .HasColumnType("varchar(11)");
 
                     b.Property<Guid>("UsuarioId")
@@ -242,6 +244,7 @@ namespace GCC.Data.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Telefone")
+                        .IsRequired()
                         .HasColumnType("varchar(11)");
 
                     b.Property<Guid>("UsuarioId")

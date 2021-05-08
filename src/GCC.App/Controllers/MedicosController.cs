@@ -59,15 +59,13 @@ namespace GCC.App.Controllers
             //}
             var medico = _mapper.Map<Medico>(medicoViewModel);
 
-            var usuarioIdentity = await _usuarioService.CadastrarUsuario("teste2", "luca2@mail.com", "#snKBCD178");
+            var usuarioIdentity = await _usuarioService.CadastrarUsuario(medicoViewModel.Email, medicoViewModel.Email, medicoViewModel.Senha);
 
             if(usuarioIdentity != null)
             {
-
+                medico.UsuarioId = Guid.Parse(usuarioIdentity.Id);
+                await _medicoRepository.Adicionar(medico);
             }
-            medico.UsuarioId = Guid.Parse(usuarioIdentity.Id);
-            await _medicoRepository.Adicionar(medico);
-
 
             return RedirectToAction("Index");
         }
@@ -134,7 +132,10 @@ namespace GCC.App.Controllers
 
         private async Task<MedicoViewModel> ObterMedicoPorId(Guid id)
         {
-            return _mapper.Map<MedicoViewModel>(await _medicoRepository.ObtenhaMedico(id));
+            var medico = _mapper.Map<MedicoViewModel>(await _medicoRepository.ObtenhaMedico(id));
+            var usuarioIdentity = await _usuarioService.ObtenhaUsuario(medico.UsuarioId);
+            medico.Email = usuarioIdentity.Email;
+            return medico;
         }
     }
 }

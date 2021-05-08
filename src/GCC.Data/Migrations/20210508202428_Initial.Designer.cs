@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GCC.Data.Migrations
 {
     [DbContext(typeof(GCCContext))]
-    [Migration("20210508144950_Initial")]
+    [Migration("20210508202428_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -114,7 +114,7 @@ namespace GCC.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("DiaDeTrabalho");
+                    b.ToTable("JornadaDeTrabalho");
                 });
 
             modelBuilder.Entity("GCC.Business.Modelos.Medico", b =>
@@ -151,6 +151,7 @@ namespace GCC.Data.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Telefone")
+                        .IsRequired()
                         .HasColumnType("varchar(11)");
 
                     b.Property<Guid>("UsuarioId")
@@ -194,6 +195,7 @@ namespace GCC.Data.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Telefone")
+                        .IsRequired()
                         .HasColumnType("varchar(11)");
 
                     b.Property<Guid>("UsuarioId")
@@ -244,6 +246,7 @@ namespace GCC.Data.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Telefone")
+                        .IsRequired()
                         .HasColumnType("varchar(11)");
 
                     b.Property<Guid>("UsuarioId")
