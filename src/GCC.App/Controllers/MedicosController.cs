@@ -46,7 +46,7 @@ namespace GCC.App.Controllers
 
         public IActionResult Create()
         {
-            return View();
+            return View(new MedicoViewModel());
         }
 
         [HttpPost]

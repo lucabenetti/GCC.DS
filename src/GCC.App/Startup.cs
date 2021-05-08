@@ -1,4 +1,5 @@
 using GCC.App.Data;
+using GCC.App.Extensions;
 using GCC.Business.Interfaces;
 using GCC.Business.Servicos;
 using GCC.Data.Context;
@@ -8,6 +9,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI;
+using Microsoft.AspNetCore.Mvc.DataAnnotations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -53,6 +55,7 @@ namespace GCC.App
             services.AddScoped<IConsultaRepository, ConsultaRepository>();
             services.AddScoped<IMedicoRepository, MedicoRepository>();
             services.AddScoped<IPacienteRepository, PacienteRepository>();
+            services.AddSingleton<IValidationAttributeAdapterProvider, PasswordValidationAttributeAdapterProvider>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

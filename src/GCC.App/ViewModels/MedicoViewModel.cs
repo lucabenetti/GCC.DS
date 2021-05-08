@@ -1,4 +1,5 @@
-﻿using GCC.Business.Modelos;
+﻿using GCC.App.Extensions;
+using GCC.Business.Modelos;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -15,7 +16,13 @@ namespace GCC.App.ViewModels
         [HiddenInput]
         public Guid UsuarioId { get; set; }
 
+        [Required]
+        [EmailAddress]
         public string Email { get; set; }
+
+        [Required]
+        [DataType(DataType.Password)]
+        [Password]
         public string Senha { get; set; }
 
         [Required(ErrorMessage = "O campo {0} é obrigatório")]
