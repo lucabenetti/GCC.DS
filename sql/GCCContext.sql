@@ -19,10 +19,20 @@ CREATE TABLE [CRM] (
 );
 GO
 
-CREATE TABLE [Especialidade] (
+CREATE TABLE [DiaDeTrabalho] (
     [Id] uniqueidentifier NOT NULL,
-    [Nome] varchar(200) NOT NULL,
-    CONSTRAINT [PK_Especialidade] PRIMARY KEY ([Id])
+    [Domingo] bit NOT NULL,
+    [Segunda] bit NOT NULL,
+    [Terca] bit NOT NULL,
+    [Quarta] bit NOT NULL,
+    [Quinta] bit NOT NULL,
+    [Sexta] bit NOT NULL,
+    [Sabado] bit NOT NULL,
+    [HoraInicio] datetime2 NOT NULL,
+    [HoraFim] datetime2 NOT NULL,
+    [HoraInicioIntervalo] datetime2 NOT NULL,
+    [HoraFimIntervalo] datetime2 NOT NULL,
+    CONSTRAINT [PK_DiaDeTrabalho] PRIMARY KEY ([Id])
 );
 GO
 
@@ -63,7 +73,8 @@ GO
 CREATE TABLE [Medico] (
     [Id] uniqueidentifier NOT NULL,
     [CRMId] uniqueidentifier NULL,
-    [EspecialidadeId] uniqueidentifier NULL,
+    [Especialidade] nvarchar(max) NULL,
+    [JornadaDeTrabalhoId] uniqueidentifier NULL,
     [UsuarioId] uniqueidentifier NOT NULL,
     [Nome] varchar(200) NOT NULL,
     [CPF] varchar(11) NOT NULL,
@@ -73,20 +84,7 @@ CREATE TABLE [Medico] (
     [DataNascimento] datetime2 NOT NULL,
     CONSTRAINT [PK_Medico] PRIMARY KEY ([Id]),
     CONSTRAINT [FK_Medico_CRM_CRMId] FOREIGN KEY ([CRMId]) REFERENCES [CRM] ([Id]) ON DELETE NO ACTION,
-    CONSTRAINT [FK_Medico_Especialidade_EspecialidadeId] FOREIGN KEY ([EspecialidadeId]) REFERENCES [Especialidade] ([Id]) ON DELETE NO ACTION
-);
-GO
-
-CREATE TABLE [DiaDeTrabalho] (
-    [Id] uniqueidentifier NOT NULL,
-    [Dia] datetime2 NOT NULL,
-    [HoraInicio] datetime2 NOT NULL,
-    [HoraFim] datetime2 NOT NULL,
-    [HoraInicioIntervalo] datetime2 NOT NULL,
-    [HoraFimIntervalo] datetime2 NOT NULL,
-    [MedicoId] uniqueidentifier NULL,
-    CONSTRAINT [PK_DiaDeTrabalho] PRIMARY KEY ([Id]),
-    CONSTRAINT [FK_DiaDeTrabalho_Medico_MedicoId] FOREIGN KEY ([MedicoId]) REFERENCES [Medico] ([Id]) ON DELETE NO ACTION
+    CONSTRAINT [FK_Medico_DiaDeTrabalho_JornadaDeTrabalhoId] FOREIGN KEY ([JornadaDeTrabalhoId]) REFERENCES [DiaDeTrabalho] ([Id]) ON DELETE NO ACTION
 );
 GO
 
@@ -98,16 +96,11 @@ CREATE TABLE [Consulta] (
     [PacienteId] uniqueidentifier NULL,
     [MedicoId] uniqueidentifier NULL,
     [Realizada] bit NOT NULL,
-    [DiaDeTrabalhoId] uniqueidentifier NULL,
     CONSTRAINT [PK_Consulta] PRIMARY KEY ([Id]),
-    CONSTRAINT [FK_Consulta_DiaDeTrabalho_DiaDeTrabalhoId] FOREIGN KEY ([DiaDeTrabalhoId]) REFERENCES [DiaDeTrabalho] ([Id]) ON DELETE NO ACTION,
     CONSTRAINT [FK_Consulta_Medico_MedicoId] FOREIGN KEY ([MedicoId]) REFERENCES [Medico] ([Id]) ON DELETE NO ACTION,
     CONSTRAINT [FK_Consulta_Paciente_PacienteId] FOREIGN KEY ([PacienteId]) REFERENCES [Paciente] ([Id]) ON DELETE NO ACTION,
     CONSTRAINT [FK_Consulta_Prontuario_ProntuarioId] FOREIGN KEY ([ProntuarioId]) REFERENCES [Prontuario] ([Id]) ON DELETE NO ACTION
 );
-GO
-
-CREATE INDEX [IX_Consulta_DiaDeTrabalhoId] ON [Consulta] ([DiaDeTrabalhoId]);
 GO
 
 CREATE INDEX [IX_Consulta_MedicoId] ON [Consulta] ([MedicoId]);
@@ -119,17 +112,14 @@ GO
 CREATE INDEX [IX_Consulta_ProntuarioId] ON [Consulta] ([ProntuarioId]);
 GO
 
-CREATE INDEX [IX_DiaDeTrabalho_MedicoId] ON [DiaDeTrabalho] ([MedicoId]);
-GO
-
 CREATE INDEX [IX_Medico_CRMId] ON [Medico] ([CRMId]);
 GO
 
-CREATE INDEX [IX_Medico_EspecialidadeId] ON [Medico] ([EspecialidadeId]);
+CREATE INDEX [IX_Medico_JornadaDeTrabalhoId] ON [Medico] ([JornadaDeTrabalhoId]);
 GO
 
 INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
-VALUES (N'20210503005702_Initial', N'5.0.5');
+VALUES (N'20210508144950_Initial', N'5.0.5');
 GO
 
 COMMIT;
