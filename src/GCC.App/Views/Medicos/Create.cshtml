@@ -1,12 +1,10 @@
 ﻿@model GCC.App.ViewModels.MedicoViewModel
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Registrar médico";
 }
 
-<h1>Create</h1>
-
-<h4>MedicoViewModel</h4>
+<h1>Registrar médico</h1>
 <hr />
 <form asp-action="Create">
     <div class="container">
@@ -63,10 +61,12 @@
                 <partial name="_JornadaDeTrabalho" />
             </div>
             <div class="col-sm">
-                <div class="form-group">
-                    <label asp-for="Especialidade" class="control-label"></label>
-                    <input asp-for="Especialidade" class="form-control" />
-                    <span asp-validation-for="Especialidade" class="text-danger"></span>
+                <div class="row">
+                    <div class="form-group">
+                        <label asp-for="Especialidade" class="control-label"></label>
+                        <input asp-for="Especialidade" class="form-control" />
+                        <span asp-validation-for="Especialidade" class="text-danger"></span>
+                    </div>
                 </div>
                 <partial name="_CRM" />
             </div>
