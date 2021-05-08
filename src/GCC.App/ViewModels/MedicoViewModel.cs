@@ -29,7 +29,7 @@ namespace GCC.App.ViewModels
         public string Nome { get; set; }
 
         [Required(ErrorMessage = "O campo {0} é obrigatório")]
-        public int CPF { get; set; }
+        public string CPF { get; set; }
 
         public int Sexo { get; set; }
 
@@ -37,7 +37,7 @@ namespace GCC.App.ViewModels
         public string Endereco { get; set; }
 
         [Required(ErrorMessage = "O campo {0} é obrigatório")]
-        public int Telefone { get; set; }
+        public string Telefone { get; set; }
 
         [Required(ErrorMessage = "O campo {0} é obrigatório")]
         [DisplayName("Data de nascimento")]

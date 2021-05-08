@@ -9,14 +9,16 @@ namespace GCC.App.Extensions
             return string.Concat(valor.Where(char.IsDigit));
         }
 
-        public static string FormataCPF(this int valor)
+        public static string FormataCPF(this string valor)
         {
-            return valor.ToString(@"000\.000\.000\-00");
+            valor = valor.ApenasNumeros();
+            return Convert.ToInt32(valor).ToString(@"000\.000\.000\-00");
         }
 
-        public static string FormataTelefone(this int valor)
+        public static string FormataTelefone(this string valor)
         {
-            return valor.ToString().Length == 14 ? valor.ToString() : valor.ToString();
+            valor = valor.ApenasNumeros();
+            return Convert.ToInt32(valor).ToString().Length == 14 ? valor.ToString() : valor.ToString();
         }
 
     }

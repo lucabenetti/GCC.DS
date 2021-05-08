@@ -6,7 +6,7 @@
 
 <h1>Registrar médico</h1>
 <hr />
-<form asp-action="Create">
+<form asp-action="Create" id="form">
     <div class="container">
         <div class="row">
             <div class="col-sm">
@@ -28,7 +28,7 @@
                 </div>
                 <div class="form-group">
                     <label asp-for="CPF" class="control-label"></label>
-                    <input asp-for="CPF" class="form-control" />
+                    <input type="text" value="" asp-for="CPF" class="form-control" />
                     <span asp-validation-for="CPF" class="text-danger"></span>
                 </div>
                 <div class="form-group">
@@ -43,12 +43,12 @@
                 </div>
                 <div class="form-group">
                     <label asp-for="Telefone" class="control-label"></label>
-                    <input asp-for="Telefone" class="form-control" />
+                    <input type="text" value="" asp-for="Telefone" class="form-control" />
                     <span asp-validation-for="Telefone" class="text-danger"></span>
                 </div>
                 <div class="form-group">
                     <label asp-for="DataNascimento" class="control-label"></label>
-                    <input type="date" asp-for="DataNascimento" class="form-control" />
+                    <input type="date" value="" asp-for="DataNascimento" class="form-control" />
                     <span asp-validation-for="DataNascimento" class="text-danger"></span>
                 </div>
 
