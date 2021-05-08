@@ -15,7 +15,7 @@ namespace GCC.App.ViewModels
         [HiddenInput]
         public Guid UsuarioId { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "O campo {0} é obrigatório")]
         [EmailAddress]
         public string Email { get; set; }
 
@@ -23,6 +23,18 @@ namespace GCC.App.ViewModels
         [StringLength(200, ErrorMessage = "O campo {0} precisa ter entre {2} e {1} caracteres", MinimumLength = 6)]
         [DataType(DataType.Password)]
         public string Senha { get; set; }
+
+        [DisplayName("Senha confirmação")]
+        [Required(ErrorMessage = "O campo {0} é obrigatório")]
+        [StringLength(200, ErrorMessage = "O campo {0} precisa ter entre {2} e {1} caracteres", MinimumLength = 6)]
+        [DataType(DataType.Password)]
+        [Compare("Senha")]
+        public string SenhaConfirmacao { get; set; }
+
+        [DisplayName("Senha antiga")]
+        [StringLength(200, ErrorMessage = "O campo {0} precisa ter entre {2} e {1} caracteres", MinimumLength = 6)]
+        [DataType(DataType.Password)]
+        public string SenhaAntiga { get; set; }
 
         [Required(ErrorMessage = "O campo {0} é obrigatório")]
         [StringLength(200, ErrorMessage = "O campo {0} precisa ter entre {2} e {1} caracteres", MinimumLength = 1)]

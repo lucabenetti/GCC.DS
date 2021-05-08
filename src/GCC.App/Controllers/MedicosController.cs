@@ -11,6 +11,7 @@ using GCC.Business.Interfaces;
 using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using GCC.Business.Modelos;
+using GCC.App.Extensions;
 
 namespace GCC.App.Controllers
 {
@@ -53,15 +54,17 @@ namespace GCC.App.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(MedicoViewModel medicoViewModel)
         {
-            //if (!ModelState.IsValid)
-            //{
-            //    return View(medicoViewModel);
-            //}
+            if (!ModelState.IsValid)
+            {
+                return View(medicoViewModel);
+            }
+
+            medicoViewModel.CPF = medicoViewModel.CPF.ApenasNumeros();
+            medicoViewModel.Telefone = medicoViewModel.Telefone.ApenasNumeros();
             var medico = _mapper.Map<Medico>(medicoViewModel);
 
             var usuarioIdentity = await _usuarioService.CadastrarUsuario(medicoViewModel.Email, medicoViewModel.Email, medicoViewModel.Senha);
-
-            if(usuarioIdentity != null)
+            if (usuarioIdentity != null)
             {
                 medico.UsuarioId = Guid.Parse(usuarioIdentity.Id);
                 await _medicoRepository.Adicionar(medico);
@@ -95,6 +98,22 @@ namespace GCC.App.Controllers
             {
                 return View(medicoViewModel);
             }
+
+            medicoViewModel.CPF = medicoViewModel.CPF.ApenasNumeros();
+            medicoViewModel.Telefone = medicoViewModel.Telefone.ApenasNumeros();
+
+            if (!await _usuarioService.AtualizeEmail(medicoViewModel.UsuarioId, medicoViewModel.Email))
+            {
+                ModelState.AddModelError(string.Empty, "Não foi possível atualizar o email.");
+                return View(medicoViewModel);
+            }
+
+            if (!await _usuarioService.AtualizeSenha(medicoViewModel.UsuarioId, medicoViewModel.SenhaAntiga, medicoViewModel.Senha))
+            {
+                ModelState.AddModelError(string.Empty, "Não foi possível atualizar a senha.");
+                return View(medicoViewModel);
+            }
+
 
             var medico = _mapper.Map<Medico>(medicoViewModel);
             await _medicoRepository.Atualizar(medico);

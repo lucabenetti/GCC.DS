@@ -12,13 +12,14 @@ namespace GCC.App.Extensions
         public static string FormataCPF(this string valor)
         {
             valor = valor.ApenasNumeros();
-            return Convert.ToInt32(valor).ToString(@"000\.000\.000\-00");
+            return Convert.ToInt64(valor).ToString(@"000\.000\.000\-00");
         }
 
         public static string FormataTelefone(this string valor)
         {
             valor = valor.ApenasNumeros();
-            return Convert.ToInt32(valor).ToString().Length == 14 ? valor.ToString() : valor.ToString();
+            var valorNumerico = Convert.ToInt64(valor);
+            return valor.Length == 10 ? valorNumerico.ToString(@"(00) 0000-0000") : valorNumerico.ToString(@"(00) 00000-0000");
         }
 
     }

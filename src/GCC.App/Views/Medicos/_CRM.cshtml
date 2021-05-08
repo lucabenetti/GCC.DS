@@ -4,10 +4,9 @@
 <div class="form-group">
     <div class="row">
         <label asp-for="CRM.Numero" class="control-label"></label>
-        <input asp-for="CRM.Numero" class="form-control" />
+        <input type="text" asp-for="CRM.Numero" class="form-control" />
         <span asp-validation-for="CRM.Numero" class="text-danger"></span>
     </div>
-
     <div class="row">
         <label asp-for="CRM.UF" class="control-label"></label>
         <select asp-for="CRM.UF" class="form-control" asp-items="@Html.GetEnumSelectList<UFEnum>()">

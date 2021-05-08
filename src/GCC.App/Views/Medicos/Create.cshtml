@@ -27,6 +27,11 @@
                     <span asp-validation-for="Senha" class="text-danger"></span>
                 </div>
                 <div class="form-group">
+                    <label asp-for="SenhaConfirmacao" class="control-label"></label>
+                    <input type="password" asp-for="SenhaConfirmacao" class="form-control" />
+                    <span asp-validation-for="SenhaConfirmacao" class="text-danger"></span>
+                </div>
+                <div class="form-group">
                     <label asp-for="CPF" class="control-label"></label>
                     <input type="text" value="" asp-for="CPF" class="form-control" />
                     <span asp-validation-for="CPF" class="text-danger"></span>
