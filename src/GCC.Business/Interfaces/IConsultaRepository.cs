@@ -12,5 +12,6 @@ namespace GCC.Business.Interfaces
         Task<IEnumerable<Consulta>> ObtenhaConsultasPaciente(Guid pacienteId);
         Task<IEnumerable<Consulta>> ObtenhaConsultasMedico(Guid medicoId);
         Task<Consulta> ObtenhaConsulta(Guid id);
+        Task<IEnumerable<Consulta>> ObtenhaConsultasMedicoPaciente();
     }
 }

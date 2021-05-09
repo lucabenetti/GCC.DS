@@ -41,5 +41,14 @@ namespace GCC.Data.Repository
                                      .Include(c => c.Prontuario)
                                      .Where(c => c.Paciente.Id == pacienteId).ToListAsync();
         }
+
+        public async Task<IEnumerable<Consulta>> ObtenhaConsultasMedicoPaciente()
+        {
+            return await Db.Consultas.AsNoTracking()
+                                     .Include(c => c.Medico)
+                                     .Include(c => c.Paciente)
+                                     .Include(c => c.Prontuario)
+                                     .ToListAsync();
+        }
     }
 }

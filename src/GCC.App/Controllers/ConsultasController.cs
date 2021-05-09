@@ -10,23 +10,30 @@ using GCC.App.ViewModels;
 using GCC.Business.Interfaces;
 using AutoMapper;
 using GCC.Business.Modelos;
+using System.Reflection;
+using GCC.App.Extensions;
 
 namespace GCC.App.Controllers
 {
     public class ConsultasController : Controller
     {
         private readonly IConsultaRepository _consultaRepository;
+        private readonly IPacienteRepository _pacienteRepository;
+        private readonly IMedicoRepository _medicoRepository;
         private readonly IMapper _mapper;
 
-        public ConsultasController(IConsultaRepository consultaRepository, IMapper mapper)
+        public ConsultasController(IConsultaRepository consultaRepository, IMedicoRepository medicoRepository,
+                                   IPacienteRepository pacienteRepository, IMapper mapper)
         {
             _consultaRepository = consultaRepository;
+            _pacienteRepository = pacienteRepository;
+            _medicoRepository = medicoRepository;
             _mapper = mapper;
         }
 
         public async Task<IActionResult> Index()
         {
-            return View(_mapper.Map<IEnumerable<ConsultaViewModel>>(await _consultaRepository.ObterTodos()));
+            return View(_mapper.Map<IEnumerable<ConsultaViewModel>>(await _consultaRepository.ObtenhaConsultasMedicoPaciente()));
         }
 
         public async Task<IActionResult> Details(Guid id)
@@ -41,24 +48,40 @@ namespace GCC.App.Controllers
             return View(consultaViewModel);
         }
 
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            return View();
+            var consultaViewModel = await PopularMedicos(new ConsultaViewModel());
+            consultaViewModel = await PopularPacientes(consultaViewModel);
+
+            return View(consultaViewModel);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(ConsultaViewModel consultaViewModel)
         {
-            //if (!ModelState.IsValid)
-            //{
-            //    consultaViewModel.Id = Guid.NewGuid();
-            //    _context.Add(consultaViewModel);
-            //    await _context.SaveChangesAsync();
-            //    return View(consultaViewModel);
-            //}
+            if (!ModelState.IsValid)
+            {
+                return View(consultaViewModel);
+            }
 
             var consulta = _mapper.Map<Consulta>(consultaViewModel);
+            if (!await MedicoPossuiDisponibilidade(consulta))
+            {
+                ModelState.AddModelError(string.Empty, "Médico não possui disponibilidade!");
+                consultaViewModel = await PopularMedicos(consultaViewModel);
+                consultaViewModel = await PopularPacientes(consultaViewModel);
+                return View(consultaViewModel);
+            }
+
+            if(!await PacientePossuiDisponibilidade(consulta))
+            {
+                ModelState.AddModelError(string.Empty, "Paciente já possui um agendamento no horario!");
+                consultaViewModel = await PopularMedicos(consultaViewModel);
+                consultaViewModel = await PopularPacientes(consultaViewModel);
+                return View(consultaViewModel);
+            }
+
             await _consultaRepository.Adicionar(consulta);
 
             return RedirectToAction("Index");
@@ -67,6 +90,7 @@ namespace GCC.App.Controllers
         public async Task<IActionResult> Edit(Guid id)
         {
             var consultaViewModel = await ObterConsultaPorId(id);
+            consultaViewModel = await PopularMedicos(consultaViewModel);
 
             if (consultaViewModel == null)
             {
@@ -127,6 +151,120 @@ namespace GCC.App.Controllers
         private async Task<ConsultaViewModel> ObterConsultaPorId(Guid id)
         {
             return _mapper.Map<ConsultaViewModel>(await _consultaRepository.ObtenhaConsulta(id));
+        }
+
+        private async Task<ConsultaViewModel> PopularMedicos(ConsultaViewModel consulta)
+        {
+            consulta.Medicos = _mapper.Map<IEnumerable<MedicoViewModel>>(await _medicoRepository.ObterTodos());
+            return consulta;
+        }
+
+        private async Task<ConsultaViewModel> PopularPacientes(ConsultaViewModel consulta)
+        {
+            consulta.Pacientes = _mapper.Map<IEnumerable<PacienteViewModel>>(await _pacienteRepository.ObterTodos());
+            return consulta;
+        }
+
+        private async Task<bool> MedicoPossuiDisponibilidade(Consulta consulta)
+        {
+            var consultasMedico = await _consultaRepository.ObtenhaConsultasMedico(consulta.MedicoId);
+            var consultasMedicoNoDia = consultasMedico.Where(c => consulta.Data.MesmoDia(c.Data)).ToList();
+
+            if (!ConsultaSeEncaixa(consulta, consultasMedicoNoDia))
+            {
+                return false;
+            }
+
+            var medico = await _medicoRepository.ObtenhaMedico(consulta.MedicoId);
+            
+            return ConsultaEstaNaJornadaDeTrabalho(consulta, medico.JornadaDeTrabalho); ;
+        }
+
+        private bool ConsultaEstaNaJornadaDeTrabalho(Consulta consulta, JornadaDeTrabalho jornadaDeTrabalho)
+        {
+            var diasDeTrabalho = ObtenhaDiasDeTrabalho(jornadaDeTrabalho);
+            
+            if(!diasDeTrabalho.Contains(consulta.Data.DayOfWeek))
+            {
+                return false;
+            }
+
+            var inicioConsulta = consulta.Data.TimeOfDay;
+            var fimConsulta = inicioConsulta.Add(consulta.Duracao);
+
+            return (inicioConsulta >= jornadaDeTrabalho.HoraInicio.TimeOfDay && fimConsulta <= jornadaDeTrabalho.HoraInicioIntervalo.TimeOfDay ||
+                    inicioConsulta >= jornadaDeTrabalho.HoraFimIntervalo.TimeOfDay && fimConsulta <= jornadaDeTrabalho.HoraFim.TimeOfDay) ;
+        }
+
+        private List<DayOfWeek> ObtenhaDiasDeTrabalho(JornadaDeTrabalho jornadaDeTrabalho)
+        {
+            var diasDeTrabalho = new List<DayOfWeek>();
+
+            if (jornadaDeTrabalho.Domingo)
+            {
+                diasDeTrabalho.Add(DayOfWeek.Sunday);
+            }
+
+            if (jornadaDeTrabalho.Segunda)
+            {
+                diasDeTrabalho.Add(DayOfWeek.Monday);
+            }
+
+            if (jornadaDeTrabalho.Terca)
+            {
+                diasDeTrabalho.Add(DayOfWeek.Tuesday);
+            }
+
+            if (jornadaDeTrabalho.Quarta)
+            {
+                diasDeTrabalho.Add(DayOfWeek.Wednesday);
+            }
+
+            if (jornadaDeTrabalho.Quinta)
+            {
+                diasDeTrabalho.Add(DayOfWeek.Thursday);
+            }
+
+            if (jornadaDeTrabalho.Sexta)
+            {
+                diasDeTrabalho.Add(DayOfWeek.Friday);
+            }
+
+            if (jornadaDeTrabalho.Sabado)
+            {
+                diasDeTrabalho.Add(DayOfWeek.Saturday);
+            }
+
+            return diasDeTrabalho;
+        }
+
+        private async Task<bool> PacientePossuiDisponibilidade(Consulta consulta)
+        {
+            var consultasPaciente = await _consultaRepository.ObtenhaConsultasPaciente(consulta.PacienteId);
+            var consultasPacienteNoDia = consultasPaciente.Where(c => Equals(consulta.Data, c.Data)).ToList();
+
+            return ConsultaSeEncaixa(consulta, consultasPacienteNoDia);
+        }
+
+        private bool ConsultaSeEncaixa(Consulta consulta, List<Consulta> consultasAgendadas)
+        {
+            var inicioConsulta = consulta.Data.TimeOfDay;
+            var fimConsulta = inicioConsulta.Add(consulta.Duracao);
+
+            foreach (var consultaAgendada in consultasAgendadas)
+            {
+                var inicioConsultaAgendada = consultaAgendada.Data.TimeOfDay;
+                var fimConsultaAgendada = inicioConsultaAgendada.Add(consultaAgendada.Duracao);
+
+                if (inicioConsulta > inicioConsultaAgendada && inicioConsulta < fimConsultaAgendada ||
+                    fimConsulta > inicioConsultaAgendada && fimConsulta < fimConsultaAgendada ||
+                    inicioConsulta < inicioConsultaAgendada && fimConsulta > fimConsultaAgendada)
+                {
+                    return false;
+                }
+            }
+
+            return true;
         }
     }
 }

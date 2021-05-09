@@ -1,41 +1,45 @@
 ﻿@model GCC.App.ViewModels.ConsultaViewModel
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Agendar consulta";
 }
 
-<h1>Create</h1>
-
-<h4>ConsultaViewModel</h4>
+<h1>Agendar consulta</h1>
 <hr />
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
+                <label asp-for="PacienteId" class="control-label">Paciente</label>
+                <select asp-for="PacienteId" class="form-control" asp-items="@(new SelectList(Model.Pacientes, "Id", "Nome"))">
+                    <option></option>
+                </select>
+                <span asp-validation-for="PacienteId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="MedicoId" class="control-label">Médico</label>
+                <select asp-for="MedicoId" class="form-control" asp-items="@(new SelectList(Model.Medicos, "Id", "Nome"))">
+                    <option></option>
+                </select>
+                <span asp-validation-for="MedicoId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
                 <label asp-for="Data" class="control-label"></label>
-                <input asp-for="Data" class="form-control" />
+                <input type="datetime-local" value="@string.Format("{0:yyyy-MM-ddTHH:mm}", DateTime.Today)" asp-for="Data" class="form-control" />
                 <span asp-validation-for="Data" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Duracao" class="control-label"></label>
-                <input asp-for="Duracao" class="form-control" />
+                <input type="time" asp-for="Duracao" class="form-control" />
                 <span asp-validation-for="Duracao" class="text-danger"></span>
             </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="Realizada" /> @Html.DisplayNameFor(model => model.Realizada)
-                </label>
-            </div>
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input type="submit" value="Agendar" class="btn btn-primary" />
+                <a asp-action="Index">Voltar</a>
             </div>
         </form>
     </div>
-</div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
 </div>
 
 @section Scripts {

@@ -11,5 +11,7 @@ namespace GCC.Business.Modelos
         public Paciente Paciente { get; set; }
         public Medico Medico { get; set; }
         public bool Realizada { get; set; }
+        public Guid PacienteId { get; set; }
+        public Guid MedicoId { get; set; }
     }
 }

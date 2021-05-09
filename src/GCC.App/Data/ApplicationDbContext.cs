@@ -23,7 +23,6 @@ namespace GCC.App.Data
             modelBuilder.Ignore<CRMViewModel>();
             modelBuilder.Ignore<JornadaDeTrabalhoViewModel>();
             modelBuilder.Ignore<ErrorViewModel>();
-            modelBuilder.Ignore<EspecialidadeViewModel>();
             modelBuilder.Ignore<MedicoViewModel>();
             modelBuilder.Ignore<PacienteViewModel>();
             modelBuilder.Ignore<ProntuarioViewModel>();

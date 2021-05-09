@@ -46,11 +46,12 @@ namespace GCC.App.Areas.Identity.Pages.Account
             [EmailAddress]
             public string Email { get; set; }
 
+            [Display(Name = "Senha")]
             [Required]
             [DataType(DataType.Password)]
             public string Password { get; set; }
 
-            [Display(Name = "Remember me?")]
+            [Display(Name = "Lembrar-me?")]
             public bool RememberMe { get; set; }
         }
 
