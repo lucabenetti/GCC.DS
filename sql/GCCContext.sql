@@ -93,9 +93,9 @@ CREATE TABLE [Consulta] (
     [Data] datetime2 NOT NULL,
     [Duracao] time NOT NULL,
     [ProntuarioId] uniqueidentifier NULL,
-    [PacienteId] uniqueidentifier NULL,
-    [MedicoId] uniqueidentifier NULL,
     [Realizada] bit NOT NULL,
+    [PacienteId] uniqueidentifier NOT NULL,
+    [MedicoId] uniqueidentifier NOT NULL,
     CONSTRAINT [PK_Consulta] PRIMARY KEY ([Id]),
     CONSTRAINT [FK_Consulta_Medico_MedicoId] FOREIGN KEY ([MedicoId]) REFERENCES [Medico] ([Id]) ON DELETE NO ACTION,
     CONSTRAINT [FK_Consulta_Paciente_PacienteId] FOREIGN KEY ([PacienteId]) REFERENCES [Paciente] ([Id]) ON DELETE NO ACTION,
@@ -119,7 +119,7 @@ CREATE INDEX [IX_Medico_JornadaDeTrabalhoId] ON [Medico] ([JornadaDeTrabalhoId])
 GO
 
 INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
-VALUES (N'20210508204700_Initial', N'5.0.5');
+VALUES (N'20210509152421_Initial', N'5.0.5');
 GO
 
 COMMIT;
