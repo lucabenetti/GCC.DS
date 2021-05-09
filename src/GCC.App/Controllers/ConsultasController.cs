@@ -98,7 +98,7 @@ namespace GCC.App.Controllers
 
         public async Task<IActionResult> Delete(Guid id)
         {
-            var consultaViewModel = ObterConsultaPorId(id);
+            var consultaViewModel = await ObterConsultaPorId(id);
 
             if (consultaViewModel == null)
             {

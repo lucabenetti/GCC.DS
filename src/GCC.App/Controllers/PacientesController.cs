@@ -12,6 +12,7 @@ using Microsoft.AspNet.Identity;
 using GCC.Business.Interfaces;
 using Microsoft.AspNet.Identity.EntityFramework;
 using GCC.Business.Modelos;
+using GCC.App.Extensions;
 
 namespace GCC.App.Controllers
 {
@@ -54,18 +55,21 @@ namespace GCC.App.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(PacienteViewModel pacienteViewModel)
         {
-            //if (!ModelState.IsValid)
-            //{
-                //return View(pacienteViewModel);
-            //}
+            if (!ModelState.IsValid)
+            {
+                return View(pacienteViewModel);
+            }
 
-            var usuarioIdentity = await _usuarioService.CadastrarUsuario("teste2", "luca2@mail.com", "#snKBCD178");
-
-            if (usuarioIdentity != null) { }
-
+            pacienteViewModel.CPF = pacienteViewModel.CPF.ApenasNumeros();
+            pacienteViewModel.Telefone = pacienteViewModel.Telefone.ApenasNumeros();
             var paciente = _mapper.Map<Paciente>(pacienteViewModel);
-            paciente.UsuarioId = Guid.Parse(usuarioIdentity.Id);
-            await _pacienteRepository.Adicionar(paciente);
+
+            var usuarioIdentity = await _usuarioService.CadastrarUsuario(pacienteViewModel.Email, pacienteViewModel.Email, pacienteViewModel.Senha);
+            if (usuarioIdentity != null) 
+            {
+                paciente.UsuarioId = Guid.Parse(usuarioIdentity.Id);
+                await _pacienteRepository.Adicionar(paciente);
+            }
 
             return RedirectToAction("Index");
         }
@@ -96,6 +100,21 @@ namespace GCC.App.Controllers
                 return View(pacienteViewModel);
             }
 
+            pacienteViewModel.CPF = pacienteViewModel.CPF.ApenasNumeros();
+            pacienteViewModel.Telefone = pacienteViewModel.Telefone.ApenasNumeros();
+
+            if (!await _usuarioService.AtualizeEmail(pacienteViewModel.UsuarioId, pacienteViewModel.Email))
+            {
+                ModelState.AddModelError(string.Empty, "Não foi possível atualizar o email.");
+                return View(pacienteViewModel);
+            }
+
+            if (!await _usuarioService.AtualizeSenha(pacienteViewModel.UsuarioId, pacienteViewModel.SenhaAntiga, pacienteViewModel.Senha))
+            {
+                ModelState.AddModelError(string.Empty, "Não foi possível atualizar a senha.");
+                return View(pacienteViewModel);
+            }
+
             var paciente = _mapper.Map<Paciente>(pacienteViewModel);
             await _pacienteRepository.Atualizar(paciente);
 
@@ -104,7 +123,7 @@ namespace GCC.App.Controllers
 
         public async Task<IActionResult> Delete(Guid id)
         {
-            var pacienteViewModel = ObterPacientePorId(id);
+            var pacienteViewModel = await ObterPacientePorId(id);
 
             if (pacienteViewModel == null)
             {
@@ -132,7 +151,10 @@ namespace GCC.App.Controllers
 
         private async Task<PacienteViewModel> ObterPacientePorId(Guid id)
         {
-            return _mapper.Map<PacienteViewModel>(await _pacienteRepository.ObtenhaPaciente(id));
+            var paciente = _mapper.Map<PacienteViewModel>(await _pacienteRepository.ObtenhaPaciente(id));
+            var usuarioIdentity = await _usuarioService.ObtenhaUsuario(paciente.UsuarioId);
+            paciente.Email = usuarioIdentity.Email;
+            return paciente;
         }
     }
 }

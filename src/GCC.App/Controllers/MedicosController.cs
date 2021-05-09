@@ -114,7 +114,6 @@ namespace GCC.App.Controllers
                 return View(medicoViewModel);
             }
 
-
             var medico = _mapper.Map<Medico>(medicoViewModel);
             await _medicoRepository.Atualizar(medico);
 
