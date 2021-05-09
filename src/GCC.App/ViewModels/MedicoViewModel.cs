@@ -16,7 +16,7 @@ namespace GCC.App.ViewModels
         public Guid UsuarioId { get; set; }
 
         [Required(ErrorMessage = "O campo {0} é obrigatório")]
-        [EmailAddress]
+        [EmailAddress(ErrorMessage = "Email inválido!")]
         public string Email { get; set; }
 
         [Required(ErrorMessage = "O campo {0} é obrigatório")]
@@ -41,6 +41,7 @@ namespace GCC.App.ViewModels
         public string Nome { get; set; }
 
         [Required(ErrorMessage = "O campo {0} é obrigatório")]
+        [StringLength(14, ErrorMessage = "O CPF informado não é válido!", MinimumLength = 14)]
         public string CPF { get; set; }
 
         public int Sexo { get; set; }
@@ -50,6 +51,7 @@ namespace GCC.App.ViewModels
         public string Endereco { get; set; }
 
         [Required(ErrorMessage = "O campo {0} é obrigatório")]
+        [StringLength(15, ErrorMessage = "O telefone informado não é válido!", MinimumLength = 14)]
         public string Telefone { get; set; }
 
         [Required(ErrorMessage = "O campo {0} é obrigatório")]

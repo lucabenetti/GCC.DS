@@ -46,6 +46,7 @@ namespace GCC.Business.Servicos
         {
             var usuario = await ObtenhaUsuario(id);
             usuario.Email = email;
+            usuario.UserName = email;
             return (await _userManager.UpdateAsync(usuario)).Succeeded;
         }
     }

@@ -1,8 +1,5 @@
 ﻿using GCC.Business.Modelos;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace GCC.Business.Interfaces
@@ -10,5 +7,6 @@ namespace GCC.Business.Interfaces
     public interface IMedicoRepository : IRepository<Medico>
     {
         Task<Medico> ObtenhaMedico(Guid id);
+        Task<Medico> ObtenhaMedicoPorCRM(CRM CRM);
     }
 }

@@ -19,14 +19,16 @@ namespace GCC.App.Controllers
     public class PacientesController : Controller
     {
         private readonly IPacienteRepository _pacienteRepository;
+        private readonly IConsultaRepository _consultaRepository;
         private readonly IMapper _mapper;
         private readonly IUsuarioService _usuarioService;
 
-        public PacientesController(IPacienteRepository pacienteRepository, IMapper mapper, IUsuarioService usuarioService)
+        public PacientesController(IPacienteRepository pacienteRepository, IMapper mapper, IUsuarioService usuarioService, IConsultaRepository consultaRepository)
         {
             _pacienteRepository = pacienteRepository;
             _mapper = mapper;
             _usuarioService = usuarioService;
+            _consultaRepository = consultaRepository;
         }
 
         public async Task<IActionResult> Index()
@@ -64,12 +66,21 @@ namespace GCC.App.Controllers
             pacienteViewModel.Telefone = pacienteViewModel.Telefone.ApenasNumeros();
             var paciente = _mapper.Map<Paciente>(pacienteViewModel);
 
-            var usuarioIdentity = await _usuarioService.CadastrarUsuario(pacienteViewModel.Email, pacienteViewModel.Email, pacienteViewModel.Senha);
-            if (usuarioIdentity != null) 
+            if ((await _pacienteRepository.Buscar(m => Equals(m.CPF, pacienteViewModel.CPF))).Any())
             {
-                paciente.UsuarioId = Guid.Parse(usuarioIdentity.Id);
-                await _pacienteRepository.Adicionar(paciente);
+                ModelState.AddModelError(string.Empty, "CPF já cadastrado!");
+                return View(pacienteViewModel);
             }
+
+            var usuarioIdentity = await _usuarioService.CadastrarUsuario(pacienteViewModel.Email, pacienteViewModel.Email, pacienteViewModel.Senha);
+            if (usuarioIdentity == null) 
+            {
+                ModelState.AddModelError(string.Empty, "Email já em utilização!");
+                return View(pacienteViewModel);
+            }
+
+            paciente.UsuarioId = Guid.Parse(usuarioIdentity.Id);
+            await _pacienteRepository.Adicionar(paciente);
 
             return RedirectToAction("Index");
         }
@@ -142,6 +153,12 @@ namespace GCC.App.Controllers
             if (pacienteViewModel == null)
             {
                 return NotFound();
+            }
+
+            if((await _consultaRepository.ObtenhaConsultasPaciente(id)).Any(c => c.Data > DateTime.Now))
+            {
+                ModelState.AddModelError(string.Empty, "Não é possível excluir pois existem consultas futuras");
+                return View(pacienteViewModel);
             }
 
             await _pacienteRepository.Remover(id);

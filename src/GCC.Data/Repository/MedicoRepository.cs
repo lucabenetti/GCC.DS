@@ -20,5 +20,14 @@ namespace GCC.Data.Repository
                                      .Include(m => m.CRM)
                                      .FirstOrDefaultAsync(m => m.Id == id);
         }
+
+        public async Task<Medico> ObtenhaMedicoPorCRM(CRM CRM)
+        {
+            return await Db.Medicos.AsNoTracking()
+                                     .Include(m => m.JornadaDeTrabalho)
+                                     .Include(m => m.CRM)
+                                     .FirstOrDefaultAsync(m => m.CRM.Numero == CRM.Numero &&
+                                                               m.CRM.UF == CRM.UF);
+        }
     }
 }

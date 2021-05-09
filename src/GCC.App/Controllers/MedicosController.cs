@@ -18,14 +18,16 @@ namespace GCC.App.Controllers
     public class MedicosController : Controller
     {
         private readonly IMedicoRepository _medicoRepository;
+        private readonly IConsultaRepository _consultaRepository;
         private readonly IMapper _mapper;
         private readonly IUsuarioService _usuarioService;
 
-        public MedicosController(IMedicoRepository medicoRepository, IMapper mapper, IUsuarioService usuarioService)
+        public MedicosController(IMedicoRepository medicoRepository, IMapper mapper, IUsuarioService usuarioService, IConsultaRepository consultaRepository)
         {
             _medicoRepository = medicoRepository;
             _mapper = mapper;
             _usuarioService = usuarioService;
+            _consultaRepository = consultaRepository;
         }
 
         public async Task<IActionResult> Index()
@@ -63,12 +65,30 @@ namespace GCC.App.Controllers
             medicoViewModel.Telefone = medicoViewModel.Telefone.ApenasNumeros();
             var medico = _mapper.Map<Medico>(medicoViewModel);
 
-            var usuarioIdentity = await _usuarioService.CadastrarUsuario(medicoViewModel.Email, medicoViewModel.Email, medicoViewModel.Senha);
-            if (usuarioIdentity != null)
+            if((await _medicoRepository.Buscar(m => Equals(m.CPF, medicoViewModel.CPF))).Any())
             {
-                medico.UsuarioId = Guid.Parse(usuarioIdentity.Id);
-                await _medicoRepository.Adicionar(medico);
+                ModelState.AddModelError(string.Empty, "CPF já cadastrado!");
             }
+
+            if ((await _medicoRepository.ObtenhaMedicoPorCRM(medico.CRM) != null))
+            {
+                ModelState.AddModelError(string.Empty, "CRM já cadastrado!");
+            }
+
+            if(ModelState.ErrorCount > 0)
+            {
+                return View(medicoViewModel);
+            }
+
+            var usuarioIdentity = await _usuarioService.CadastrarUsuario(medicoViewModel.Email, medicoViewModel.Email, medicoViewModel.Senha);
+            if (usuarioIdentity == null)
+            {
+                ModelState.AddModelError(string.Empty, "Email já em utilização!");
+                return View(medicoViewModel);
+            }
+
+            medico.UsuarioId = Guid.Parse(usuarioIdentity.Id);
+            await _medicoRepository.Adicionar(medico);
 
             return RedirectToAction("Index");
         }
@@ -101,6 +121,12 @@ namespace GCC.App.Controllers
 
             medicoViewModel.CPF = medicoViewModel.CPF.ApenasNumeros();
             medicoViewModel.Telefone = medicoViewModel.Telefone.ApenasNumeros();
+
+            if ((await _consultaRepository.ObtenhaConsultasMedico(id)).Any(c => c.Data > DateTime.Now))
+            {
+                ModelState.AddModelError(string.Empty, "Não é possível editar pois existem consultas futuras na jornada de trabalho alterada.");
+                return View(medicoViewModel);
+            }
 
             if (!await _usuarioService.AtualizeEmail(medicoViewModel.UsuarioId, medicoViewModel.Email))
             {
@@ -141,6 +167,12 @@ namespace GCC.App.Controllers
             if (medicoViewModel == null)
             {
                 return NotFound();
+            }
+
+            if ((await _consultaRepository.ObtenhaConsultasMedico(id)).Any(c => c.Data > DateTime.Now))
+            {
+                ModelState.AddModelError(string.Empty, "Não é possível excluir pois existem consultas futuras");
+                return View(medicoViewModel);
             }
 
             await _medicoRepository.Remover(id);

@@ -65,6 +65,14 @@ namespace GCC.App.Controllers
                 return View(consultaViewModel);
             }
 
+            if(consultaViewModel.Data > DateTime.Now.AddDays(30))
+            {
+                ModelState.AddModelError(string.Empty, "Consulta pode ser agendeda apenas com 30 dias de antecedência.");
+                consultaViewModel = await PopularMedicos(consultaViewModel);
+                consultaViewModel = await PopularPacientes(consultaViewModel);
+                return View(consultaViewModel);
+            }
+
             var consulta = _mapper.Map<Consulta>(consultaViewModel);
             if (!await MedicoPossuiDisponibilidade(consulta))
             {
@@ -241,7 +249,7 @@ namespace GCC.App.Controllers
         private async Task<bool> PacientePossuiDisponibilidade(Consulta consulta)
         {
             var consultasPaciente = await _consultaRepository.ObtenhaConsultasPaciente(consulta.PacienteId);
-            var consultasPacienteNoDia = consultasPaciente.Where(c => Equals(consulta.Data, c.Data)).ToList();
+            var consultasPacienteNoDia = consultasPaciente.Where(c => consulta.Data.MesmoDia(c.Data)).ToList();
 
             return ConsultaSeEncaixa(consulta, consultasPacienteNoDia);
         }
