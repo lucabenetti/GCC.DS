@@ -9,5 +9,6 @@ namespace GCC.Business.Interfaces
 {
     public interface IExameRepository : IRepository<Exame>
     {
+        Task<bool> JaCadastradoMesmoNome(string nome);
     }
 }

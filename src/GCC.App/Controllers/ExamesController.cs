@@ -46,10 +46,20 @@ namespace GCC.App.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Exame exameViewModel)
+        public async Task<IActionResult> Create(ExameViewModel exameViewModel)
         {
             if (!ModelState.IsValid)
             {
+                return View(exameViewModel);
+            }
+
+            exameViewModel.Nome = exameViewModel.Nome.Trim().ToUpper();
+
+            var jaCadastrado = await _exameRepository.JaCadastradoMesmoNome(exameViewModel.Nome);
+
+            if(jaCadastrado)
+            {
+                ModelState.AddModelError(string.Empty, "Esse tipo de exame já foi cadastrado!");
                 return View(exameViewModel);
             }
 
@@ -83,6 +93,16 @@ namespace GCC.App.Controllers
 
             if (!ModelState.IsValid)
             {
+                return View(exameViewModel);
+            }
+
+            exameViewModel.Nome = exameViewModel.Nome.Trim().ToUpper();
+
+            var jaCadastrado = await _exameRepository.JaCadastradoMesmoNome(exameViewModel.Nome);
+
+            if (jaCadastrado)
+            {
+                ModelState.AddModelError(string.Empty, "Esse tipo de exame já foi cadastrado!");
                 return View(exameViewModel);
             }
 
