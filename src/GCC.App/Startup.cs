@@ -56,6 +56,7 @@ namespace GCC.App
             services.AddScoped<IConsultaRepository, ConsultaRepository>();
             services.AddScoped<IMedicoRepository, MedicoRepository>();
             services.AddScoped<IPacienteRepository, PacienteRepository>();
+            services.AddScoped<IExameRepository, ExameRepository>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
