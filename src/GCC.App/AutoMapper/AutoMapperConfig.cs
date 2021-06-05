@@ -13,7 +13,6 @@ namespace GCC.App.AutoMapper
             CreateMap<JornadaDeTrabalho, JornadaDeTrabalhoViewModel>().ReverseMap();
             CreateMap<Medico, MedicoViewModel>().ReverseMap();
             CreateMap<Paciente, PacienteViewModel>().ReverseMap();
-            CreateMap<Prontuario, ProntuarioViewModel>().ReverseMap();
         }
     }
 }

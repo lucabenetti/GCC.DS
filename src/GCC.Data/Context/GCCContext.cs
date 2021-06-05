@@ -11,11 +11,8 @@ namespace GCC.Data.Context
     public class GCCContext : DbContext
     {
         public DbSet<Consulta> Consultas { get; set; }
-        public DbSet<CRM> CRMs { get; set; }
-        public DbSet<JornadaDeTrabalho> DiasDeTrabalho { get; set; }
         public DbSet<Medico> Medicos { get; set; }
         public DbSet<Paciente> Pacientes { get; set; }
-        public DbSet<Prontuario> Prontuarios { get; set; }
         public DbSet<Secretaria> Secretarias { get; set; }
 
         public GCCContext(DbContextOptions options) : base(options)

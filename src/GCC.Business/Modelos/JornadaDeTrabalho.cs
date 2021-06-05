@@ -5,7 +5,7 @@ using System.ComponentModel;
 
 namespace GCC.Business.Modelos
 {
-    public class JornadaDeTrabalho : Entidade
+    public class JornadaDeTrabalho
     {
         public bool Domingo { get; set; }
         public bool Segunda { get; set; }

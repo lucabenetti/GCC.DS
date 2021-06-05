@@ -22,7 +22,7 @@ namespace GCC.App.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "AspNetUsers",
+                name: "Usuario",
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
@@ -43,7 +43,7 @@ namespace GCC.App.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                    table.PrimaryKey("PK_Usuario", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -81,9 +81,9 @@ namespace GCC.App.Migrations
                 {
                     table.PrimaryKey("PK_AspNetUserClaims", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_AspNetUserClaims_AspNetUsers_UserId",
+                        name: "FK_AspNetUserClaims_Usuario_UserId",
                         column: x => x.UserId,
-                        principalTable: "AspNetUsers",
+                        principalTable: "Usuario",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -101,9 +101,9 @@ namespace GCC.App.Migrations
                 {
                     table.PrimaryKey("PK_AspNetUserLogins", x => new { x.LoginProvider, x.ProviderKey });
                     table.ForeignKey(
-                        name: "FK_AspNetUserLogins_AspNetUsers_UserId",
+                        name: "FK_AspNetUserLogins_Usuario_UserId",
                         column: x => x.UserId,
-                        principalTable: "AspNetUsers",
+                        principalTable: "Usuario",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -125,9 +125,9 @@ namespace GCC.App.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_AspNetUserRoles_AspNetUsers_UserId",
+                        name: "FK_AspNetUserRoles_Usuario_UserId",
                         column: x => x.UserId,
-                        principalTable: "AspNetUsers",
+                        principalTable: "Usuario",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -145,9 +145,9 @@ namespace GCC.App.Migrations
                 {
                     table.PrimaryKey("PK_AspNetUserTokens", x => new { x.UserId, x.LoginProvider, x.Name });
                     table.ForeignKey(
-                        name: "FK_AspNetUserTokens_AspNetUsers_UserId",
+                        name: "FK_AspNetUserTokens_Usuario_UserId",
                         column: x => x.UserId,
-                        principalTable: "AspNetUsers",
+                        principalTable: "Usuario",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -181,12 +181,12 @@ namespace GCC.App.Migrations
 
             migrationBuilder.CreateIndex(
                 name: "EmailIndex",
-                table: "AspNetUsers",
+                table: "Usuario",
                 column: "NormalizedEmail");
 
             migrationBuilder.CreateIndex(
                 name: "UserNameIndex",
-                table: "AspNetUsers",
+                table: "Usuario",
                 column: "NormalizedUserName",
                 unique: true,
                 filter: "[NormalizedUserName] IS NOT NULL");
@@ -213,7 +213,7 @@ namespace GCC.App.Migrations
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "AspNetUsers");
+                name: "Usuario");
         }
     }
 }

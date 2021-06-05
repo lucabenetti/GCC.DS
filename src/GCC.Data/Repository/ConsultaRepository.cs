@@ -20,7 +20,6 @@ namespace GCC.Data.Repository
             return await Db.Consultas.AsNoTracking()
                                      .Include(c => c.Medico)
                                      .Include(c => c.Paciente)
-                                     .Include(c => c.Prontuario)
                                      .FirstOrDefaultAsync(c => c.Id == id);
         }
 
@@ -29,7 +28,6 @@ namespace GCC.Data.Repository
             return await Db.Consultas.AsNoTracking()
                                      .Include(c => c.Medico)
                                      .Include(c => c.Paciente)
-                                     .Include(c => c.Prontuario)
                                      .Where(c => c.Medico.Id == medicoId).ToListAsync();
         }
 
@@ -38,7 +36,6 @@ namespace GCC.Data.Repository
             return await Db.Consultas.AsNoTracking()
                                      .Include(c => c.Medico)
                                      .Include(c => c.Paciente)
-                                     .Include(c => c.Prontuario)
                                      .Where(c => c.Paciente.Id == pacienteId).ToListAsync();
         }
 
@@ -47,7 +44,6 @@ namespace GCC.Data.Repository
             return await Db.Consultas.AsNoTracking()
                                      .Include(c => c.Medico)
                                      .Include(c => c.Paciente)
-                                     .Include(c => c.Prontuario)
                                      .ToListAsync();
         }
     }

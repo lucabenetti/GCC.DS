@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
 using GCC.App.ViewModels;
+using Microsoft.AspNetCore.Identity;
 
 namespace GCC.App.Data
 {
@@ -26,6 +27,8 @@ namespace GCC.App.Data
             modelBuilder.Ignore<MedicoViewModel>();
             modelBuilder.Ignore<PacienteViewModel>();
             modelBuilder.Ignore<ProntuarioViewModel>();
+
+            modelBuilder.Entity<IdentityUser>().ToTable("Usuario");
 
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
         }
