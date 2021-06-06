@@ -16,6 +16,7 @@ namespace GCC.Data.Mapeamento
             builder.HasKey(c => c.Id);
             builder.Property(c => c.Nome).IsRequired();
             builder.ToTable("Exame");
+            builder.HasMany(c => c.Consulta).WithMany(c => c.Exame);
         }
     }
 }

@@ -26,7 +26,7 @@ namespace GCC.Data.Context
 
             foreach (var relationship in modelBuilder.Model.GetEntityTypes().SelectMany(e => e.GetForeignKeys()))
             {
-                relationship.DeleteBehavior = DeleteBehavior.ClientSetNull;
+                relationship.DeleteBehavior = DeleteBehavior.Cascade;
             }
 
             base.OnModelCreating(modelBuilder);

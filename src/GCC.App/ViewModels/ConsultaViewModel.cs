@@ -31,6 +31,8 @@ namespace GCC.App.ViewModels
         public ProntuarioViewModel Prontuario { get; set; }
         public PacienteViewModel Paciente { get; set; }
         public MedicoViewModel Medico { get; set; }
+        public List<Guid> ExamesId { get; set; }
+        public IEnumerable<ExameViewModel> Exames { get; set; }
         public IEnumerable<PacienteViewModel> Pacientes { get; set; }
         public IEnumerable<MedicoViewModel> Medicos { get; set; }
     }

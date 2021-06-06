@@ -12,6 +12,7 @@ namespace GCC.Data.Mapeamento
             builder.Property(c => c.Data).IsRequired();
             builder.Property(c => c.Duracao).IsRequired();
             builder.Property(c => c.Realizada).IsRequired();
+            builder.HasMany(c => c.Exame).WithMany(c => c.Consulta);
 
             builder.ToTable("Consulta");
         }

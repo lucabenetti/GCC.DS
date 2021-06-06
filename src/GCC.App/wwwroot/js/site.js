@@ -13,3 +13,6 @@ $('#Telefone').on('change', function () {
     $("#Telefone").mask("(00) 00000-0000");
 });
 
+$(document).ready(function () {
+    $('#ExamesDropdown').multiselect({ nonSelectedText: 'NENHUM SELECIONADO', allSelectedText: 'TODOS SELECIONADOS' });
+});

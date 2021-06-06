@@ -160,3 +160,37 @@ GO
 COMMIT;
 GO
 
+BEGIN TRANSACTION;
+GO
+
+ALTER TABLE [Consulta] DROP CONSTRAINT [FK_Consulta_Medico_MedicoId];
+GO
+
+ALTER TABLE [Consulta] DROP CONSTRAINT [FK_Consulta_Paciente_PacienteId];
+GO
+
+ALTER TABLE [ConsultaExame] DROP CONSTRAINT [FK_ConsultaExame_Consulta_ConsultaId];
+GO
+
+ALTER TABLE [ConsultaExame] DROP CONSTRAINT [FK_ConsultaExame_Exame_ExameId];
+GO
+
+ALTER TABLE [Consulta] ADD CONSTRAINT [FK_Consulta_Medico_MedicoId] FOREIGN KEY ([MedicoId]) REFERENCES [Medico] ([Id]) ON DELETE CASCADE;
+GO
+
+ALTER TABLE [Consulta] ADD CONSTRAINT [FK_Consulta_Paciente_PacienteId] FOREIGN KEY ([PacienteId]) REFERENCES [Paciente] ([Id]) ON DELETE CASCADE;
+GO
+
+ALTER TABLE [ConsultaExame] ADD CONSTRAINT [FK_ConsultaExame_Consulta_ConsultaId] FOREIGN KEY ([ConsultaId]) REFERENCES [Consulta] ([Id]) ON DELETE CASCADE;
+GO
+
+ALTER TABLE [ConsultaExame] ADD CONSTRAINT [FK_ConsultaExame_Exame_ExameId] FOREIGN KEY ([ExameId]) REFERENCES [Exame] ([Id]) ON DELETE CASCADE;
+GO
+
+INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+VALUES (N'20210606121909_Initial5', N'5.0.5');
+GO
+
+COMMIT;
+GO
+
