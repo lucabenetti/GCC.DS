@@ -10,5 +10,6 @@ namespace GCC.Business.Interfaces
     public interface IPacienteRepository : IRepository<Paciente>
     {
         Task<Paciente> ObtenhaPaciente(Guid id);
+        Task<Paciente> ObtenhaPorIdIdentity(Guid id);
     }
 }

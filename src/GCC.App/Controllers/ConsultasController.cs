@@ -12,9 +12,12 @@ using AutoMapper;
 using GCC.Business.Modelos;
 using System.Reflection;
 using GCC.App.Extensions;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace GCC.App.Controllers
 {
+    [Authorize]
     public class ConsultasController : Controller
     {
         private readonly IConsultaRepository _consultaRepository;
@@ -33,18 +36,27 @@ namespace GCC.App.Controllers
             _mapper = mapper;
         }
 
+        [ClaimsAuthorize("Consulta", "R")]
         public async Task<IActionResult> Index()
         {
+            if(UsuarioLogadoEhPaciente())
+            {
+                var idUsuario = ObterIdUsuarioLogado();
+                return RedirectToAction("Paciente", new { id = idUsuario });
+            }
+
             return View(_mapper.Map<IEnumerable<ConsultaViewModel>>(await _consultaRepository.ObtenhaConsultasMedicoPaciente()));
         }
 
+        [ClaimsAuthorize("Consulta", "R")]
         public async Task<IActionResult> Paciente(Guid id)
         {
-            var paciente = await _pacienteRepository.ObterPorId(id);
+            var paciente = await _pacienteRepository.ObtenhaPorIdIdentity(id);
             ViewBag.Nome = paciente.Nome;
             return View(_mapper.Map<IEnumerable<ConsultaViewModel>>(await _consultaRepository.ObtenhaConsultasPaciente(id)));
         }
 
+        [ClaimsAuthorize("Consulta", "R")]
         public async Task<IActionResult> Details(Guid id)
         {
             var consultaViewModel = await ObterConsultaPorId(id);
@@ -60,6 +72,7 @@ namespace GCC.App.Controllers
             return View(consultaViewModel);
         }
 
+        [ClaimsAuthorize("Consulta", "C")]
         public async Task<IActionResult> Create()
         {
             var consultaViewModel = await PopularMedicos(new ConsultaViewModel());
@@ -69,6 +82,7 @@ namespace GCC.App.Controllers
             return View(consultaViewModel);
         }
 
+        [ClaimsAuthorize("Consulta", "C")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(ConsultaViewModel consultaViewModel)
@@ -119,6 +133,7 @@ namespace GCC.App.Controllers
             return RedirectToAction("Index");
         }
 
+        [ClaimsAuthorize("Consulta", "U")]
         public async Task<IActionResult> Edit(Guid id)
         {
             var consultaViewModel = await ObterConsultaPorId(id);
@@ -133,6 +148,7 @@ namespace GCC.App.Controllers
             return View(consultaViewModel);
         }
 
+        [ClaimsAuthorize("Consulta", "U")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(Guid id, ConsultaViewModel consultaViewModel)
@@ -153,6 +169,7 @@ namespace GCC.App.Controllers
             return RedirectToAction("Index");
         }
 
+        [ClaimsAuthorize("Consulta", "D")]
         public async Task<IActionResult> Delete(Guid id)
         {
             var consultaViewModel = await ObterConsultaPorId(id);
@@ -167,6 +184,7 @@ namespace GCC.App.Controllers
             return View(consultaViewModel);
         }
 
+        [ClaimsAuthorize("Consulta", "D")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
@@ -308,6 +326,22 @@ namespace GCC.App.Controllers
             }
 
             return true;
+        }
+
+        private bool UsuarioLogadoEhPaciente()
+        {
+            return Equals("P", ObterClaim("Tipo"));
+        }
+
+        private Guid ObterIdUsuarioLogado()
+        {
+            var idStr = ObterClaim(ClaimTypes.NameIdentifier);
+            return Guid.Parse(idStr);
+        }
+
+        private string ObterClaim(string type)
+        {
+            return User?.Claims?.FirstOrDefault(c => c.Type == type)?.Value;
         }
     }
 }

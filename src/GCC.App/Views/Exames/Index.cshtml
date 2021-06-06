@@ -7,7 +7,7 @@
 <h1>Exames</h1>
 
 <p>
-    <a asp-action="Create">Cadastrar</a>
+    <a supress-by-claim-name="Exame" supress-by-claim-value="C" asp-action="Create">Cadastrar</a>
 </p>
 <table class="table">
     <thead>
@@ -25,9 +25,9 @@
                 @Html.DisplayFor(modelItem => item.Nome)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Editar</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Detalhes</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Excluir</a>
+                <a supress-by-claim-name="Exame" supress-by-claim-value="U" asp-action="Edit" asp-route-id="@item.Id">Editar</a> |
+                <a supress-by-claim-name="Exame" supress-by-claim-value="R" asp-action="Details" asp-route-id="@item.Id">Detalhes</a> |
+                <a supress-by-claim-name="Exame" supress-by-claim-value="D" asp-action="Delete" asp-route-id="@item.Id">Excluir</a>
             </td>
         </tr>
 }

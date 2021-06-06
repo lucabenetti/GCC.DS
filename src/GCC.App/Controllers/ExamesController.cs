@@ -1,16 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using GCC.App.ViewModels;
 using GCC.Business.Interfaces;
 using AutoMapper;
 using GCC.Business.Modelos;
+using Microsoft.AspNetCore.Authorization;
 using GCC.App.Extensions;
 
 namespace GCC.App.Controllers
 {
+    [Authorize]
     public class ExamesController : Controller
     {
         private readonly IExameRepository _exameRepository;
@@ -22,11 +23,13 @@ namespace GCC.App.Controllers
             _mapper = mapper;
         }
 
+        [ClaimsAuthorize("Exame", "R")]
         public async Task<IActionResult> Index()
         {
             return View(_mapper.Map<IEnumerable<ExameViewModel>>(await _exameRepository.ObterTodos()));
         }
 
+        [ClaimsAuthorize("Exame", "R")]
         public async Task<IActionResult> Details(Guid id)
         {
             var exameViewModel = await ObterExamePorId(id);
@@ -39,11 +42,13 @@ namespace GCC.App.Controllers
             return View(exameViewModel);
         }
 
+        [ClaimsAuthorize("Exame", "C")]
         public async Task<IActionResult> Create()
         {
             return View(new ExameViewModel());
         }
 
+        [ClaimsAuthorize("Exame", "C")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(ExameViewModel exameViewModel)
@@ -70,6 +75,7 @@ namespace GCC.App.Controllers
             return RedirectToAction("Index");
         }
 
+        [ClaimsAuthorize("Exame", "U")]
         public async Task<IActionResult> Edit(Guid id)
         {
             var exameViewModel = await ObterExamePorId(id);
@@ -82,6 +88,7 @@ namespace GCC.App.Controllers
             return View(exameViewModel);
         }
 
+        [ClaimsAuthorize("Exame", "U")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(Guid id, ExameViewModel exameViewModel)
@@ -112,6 +119,7 @@ namespace GCC.App.Controllers
             return RedirectToAction("Index");
         }
 
+        [ClaimsAuthorize("Exame", "D")]
         public async Task<IActionResult> Delete(Guid id)
         {
             var exameViewModel = await ObterExamePorId(id);
@@ -124,6 +132,7 @@ namespace GCC.App.Controllers
             return View(exameViewModel);
         }
 
+        [ClaimsAuthorize("Exame", "D")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)

@@ -8,9 +8,11 @@ using AutoMapper;
 using GCC.Business.Interfaces;
 using GCC.Business.Modelos;
 using GCC.App.Extensions;
+using Microsoft.AspNetCore.Authorization;
 
 namespace GCC.App.Controllers
 {
+    [Authorize]
     public class SecretariasController : Controller
     {
         private readonly ISecretariaRepository _secretariaRepository;
@@ -24,11 +26,13 @@ namespace GCC.App.Controllers
             _usuarioService = usuarioService;
         }
 
+        [ClaimsAuthorize("Secretaria", "R")]
         public async Task<IActionResult> Index()
         {
             return View(_mapper.Map<IEnumerable<SecretariaViewModel>>(await _secretariaRepository.ObterTodos()));
         }
 
+        [ClaimsAuthorize("Secretaria", "R")]
         public async Task<IActionResult> Details(Guid id)
         {
             var secretariaViewModel = await ObterSecretariaPorId(id);
@@ -41,11 +45,13 @@ namespace GCC.App.Controllers
             return View(secretariaViewModel);
         }
 
+        [ClaimsAuthorize("Secretaria", "C")]
         public IActionResult Create()
         {
             return View();
         }
 
+        [ClaimsAuthorize("Secretaria", "C")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(SecretariaViewModel secretariaViewModel)
@@ -65,7 +71,7 @@ namespace GCC.App.Controllers
                 return View(secretariaViewModel);
             }
 
-            var usuarioIdentity = await _usuarioService.CadastrarUsuario(secretariaViewModel.Email, secretariaViewModel.Email, secretariaViewModel.Senha);
+            var usuarioIdentity = await _usuarioService.CadastrarSecretaria(secretariaViewModel.Email, secretariaViewModel.Email, secretariaViewModel.Senha);
             if (usuarioIdentity == null)
             {
                 ModelState.AddModelError(string.Empty, "Email já em utilização!");
@@ -78,6 +84,7 @@ namespace GCC.App.Controllers
             return RedirectToAction("Index");
         }
 
+        [ClaimsAuthorize("Secretaria", "U")]
         public async Task<IActionResult> Edit(Guid id)
         {
             var secretariaViewModel = await ObterSecretariaPorId(id);
@@ -90,6 +97,7 @@ namespace GCC.App.Controllers
             return View(secretariaViewModel);
         }
 
+        [ClaimsAuthorize("Secretaria", "U")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(Guid id, SecretariaViewModel secretariaViewModel)
@@ -125,6 +133,7 @@ namespace GCC.App.Controllers
             return RedirectToAction("Index");
         }
 
+        [ClaimsAuthorize("Secretaria", "D")]
         public async Task<IActionResult> Delete(Guid id)
         {
             var secretariaViewModel = await ObterSecretariaPorId(id);
@@ -137,6 +146,7 @@ namespace GCC.App.Controllers
             return View(secretariaViewModel);
         }
 
+        [ClaimsAuthorize("Secretaria", "D")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)

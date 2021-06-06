@@ -21,5 +21,11 @@ namespace GCC.Data.Repository
             return await Db.Pacientes.AsNoTracking()
                               .FirstOrDefaultAsync(p => p.Id == id);
         }
+
+        public async Task<Paciente> ObtenhaPorIdIdentity(Guid id)
+        {
+            return await Db.Pacientes.AsNoTracking()
+                              .FirstOrDefaultAsync(p => Equals(p.UsuarioId, id));
+        }
     }
 }
