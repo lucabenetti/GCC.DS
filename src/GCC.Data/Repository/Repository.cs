@@ -32,6 +32,11 @@ namespace GCC.Data.Repository
             return await DbSet.AsNoTracking().FirstAsync(e => e.Id == id);
         }
 
+        public virtual async Task<TEntity> ObterPorIdTracking(Guid id)
+        {
+            return await DbSet.FirstAsync(e => e.Id == id);
+        }
+
         public virtual async Task<List<TEntity>> ObterTodos()
         {
             return await DbSet.AsNoTracking().ToListAsync();
@@ -55,6 +60,12 @@ namespace GCC.Data.Repository
             await SaveChanges();
         }
 
+        public virtual async Task Remover(TEntity entity)
+        {
+            DbSet.Remove(entity);
+            await SaveChanges();
+        }
+
         public async Task<int> SaveChanges()
         {
             return await Db.SaveChangesAsync();
@@ -65,7 +76,7 @@ namespace GCC.Data.Repository
             Db?.DisposeAsync();
         }
 
-        public virtual void DetachLocal(TEntity entity)
+        public async Task DetachLocal(TEntity entity)
         {
             var local = DbSet.Local.Where(e => e.Id == entity.Id).FirstOrDefault();
             if (local != null)

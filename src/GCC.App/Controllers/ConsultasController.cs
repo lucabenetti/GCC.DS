@@ -12,33 +12,57 @@ using AutoMapper;
 using GCC.Business.Modelos;
 using System.Reflection;
 using GCC.App.Extensions;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace GCC.App.Controllers
 {
+    [Authorize]
     public class ConsultasController : Controller
     {
         private readonly IConsultaRepository _consultaRepository;
         private readonly IPacienteRepository _pacienteRepository;
         private readonly IMedicoRepository _medicoRepository;
+        private readonly IExameRepository _exameRepository;
         private readonly IMapper _mapper;
 
         public ConsultasController(IConsultaRepository consultaRepository, IMedicoRepository medicoRepository,
-                                   IPacienteRepository pacienteRepository, IMapper mapper)
+                                   IPacienteRepository pacienteRepository, IExameRepository exameRepository, IMapper mapper)
         {
             _consultaRepository = consultaRepository;
             _pacienteRepository = pacienteRepository;
             _medicoRepository = medicoRepository;
+            _exameRepository = exameRepository;
             _mapper = mapper;
         }
 
+        [ClaimsAuthorize("Consulta", "R")]
         public async Task<IActionResult> Index()
         {
+            if(UsuarioLogadoEhPaciente())
+            {
+                var idUsuario = ObterIdUsuarioLogado();
+                return RedirectToAction("Paciente", new { id = idUsuario });
+            }
+
             return View(_mapper.Map<IEnumerable<ConsultaViewModel>>(await _consultaRepository.ObtenhaConsultasMedicoPaciente()));
         }
 
+        [ClaimsAuthorize("Consulta", "R")]
+        public async Task<IActionResult> Paciente(Guid id)
+        {
+            var paciente = await _pacienteRepository.ObtenhaPorIdIdentity(id);
+            ViewBag.Nome = paciente.Nome;
+            return View(_mapper.Map<IEnumerable<ConsultaViewModel>>(await _consultaRepository.ObtenhaConsultasPaciente(id)));
+        }
+
+        [ClaimsAuthorize("Consulta", "R")]
         public async Task<IActionResult> Details(Guid id)
         {
             var consultaViewModel = await ObterConsultaPorId(id);
+            consultaViewModel = await PopularMedicos(consultaViewModel);
+            consultaViewModel = await PopularPacientes(consultaViewModel);
+            consultaViewModel = await PopularExames(consultaViewModel);
 
             if (consultaViewModel == null)
             {
@@ -48,14 +72,17 @@ namespace GCC.App.Controllers
             return View(consultaViewModel);
         }
 
+        [ClaimsAuthorize("Consulta", "C")]
         public async Task<IActionResult> Create()
         {
             var consultaViewModel = await PopularMedicos(new ConsultaViewModel());
             consultaViewModel = await PopularPacientes(consultaViewModel);
+            consultaViewModel = await PopularExames(consultaViewModel);
 
             return View(consultaViewModel);
         }
 
+        [ClaimsAuthorize("Consulta", "C")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(ConsultaViewModel consultaViewModel)
@@ -70,6 +97,7 @@ namespace GCC.App.Controllers
                 ModelState.AddModelError(string.Empty, "Consulta pode ser agendeda apenas com 30 dias de antecedência.");
                 consultaViewModel = await PopularMedicos(consultaViewModel);
                 consultaViewModel = await PopularPacientes(consultaViewModel);
+                consultaViewModel = await PopularExames(consultaViewModel);
                 return View(consultaViewModel);
             }
 
@@ -79,6 +107,7 @@ namespace GCC.App.Controllers
                 ModelState.AddModelError(string.Empty, "Médico não possui disponibilidade!");
                 consultaViewModel = await PopularMedicos(consultaViewModel);
                 consultaViewModel = await PopularPacientes(consultaViewModel);
+                consultaViewModel = await PopularExames(consultaViewModel);
                 return View(consultaViewModel);
             }
 
@@ -87,18 +116,29 @@ namespace GCC.App.Controllers
                 ModelState.AddModelError(string.Empty, "Paciente já possui um agendamento no horario!");
                 consultaViewModel = await PopularMedicos(consultaViewModel);
                 consultaViewModel = await PopularPacientes(consultaViewModel);
+                consultaViewModel = await PopularExames(consultaViewModel);
                 return View(consultaViewModel);
             }
 
+            var colecaoDeExames = new List<Exame>();
+            foreach (var exameId in consultaViewModel.ExamesId)
+            {
+                var exame = await _exameRepository.ObterPorIdTracking(exameId);
+                colecaoDeExames.Add(exame);
+            }
+
+            consulta.Exame = colecaoDeExames;
             await _consultaRepository.Adicionar(consulta);
 
             return RedirectToAction("Index");
         }
 
+        [ClaimsAuthorize("Consulta", "U")]
         public async Task<IActionResult> Edit(Guid id)
         {
             var consultaViewModel = await ObterConsultaPorId(id);
             consultaViewModel = await PopularMedicos(consultaViewModel);
+            consultaViewModel = await PopularExames(consultaViewModel);
 
             if (consultaViewModel == null)
             {
@@ -108,6 +148,7 @@ namespace GCC.App.Controllers
             return View(consultaViewModel);
         }
 
+        [ClaimsAuthorize("Consulta", "U")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(Guid id, ConsultaViewModel consultaViewModel)
@@ -128,9 +169,12 @@ namespace GCC.App.Controllers
             return RedirectToAction("Index");
         }
 
+        [ClaimsAuthorize("Consulta", "D")]
         public async Task<IActionResult> Delete(Guid id)
         {
             var consultaViewModel = await ObterConsultaPorId(id);
+            consultaViewModel = await PopularMedicos(consultaViewModel);
+            consultaViewModel = await PopularExames(consultaViewModel);
 
             if (consultaViewModel == null)
             {
@@ -140,6 +184,7 @@ namespace GCC.App.Controllers
             return View(consultaViewModel);
         }
 
+        [ClaimsAuthorize("Consulta", "D")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
@@ -151,7 +196,9 @@ namespace GCC.App.Controllers
                 return NotFound();
             }
 
-            await _consultaRepository.Remover(id);
+            var consulta = await _consultaRepository.ObtenhaConsulta(id);
+
+            await _consultaRepository.Remover(consulta);
 
             return RedirectToAction("Index");
         }
@@ -170,6 +217,12 @@ namespace GCC.App.Controllers
         private async Task<ConsultaViewModel> PopularPacientes(ConsultaViewModel consulta)
         {
             consulta.Pacientes = _mapper.Map<IEnumerable<PacienteViewModel>>(await _pacienteRepository.ObterTodos());
+            return consulta;
+        }
+
+        private async Task<ConsultaViewModel> PopularExames(ConsultaViewModel consulta)
+        {
+            consulta.Exames = _mapper.Map<IEnumerable<ExameViewModel>>(await _exameRepository.ObterTodos());
             return consulta;
         }
 
@@ -273,6 +326,22 @@ namespace GCC.App.Controllers
             }
 
             return true;
+        }
+
+        private bool UsuarioLogadoEhPaciente()
+        {
+            return Equals("P", ObterClaim("Tipo"));
+        }
+
+        private Guid ObterIdUsuarioLogado()
+        {
+            var idStr = ObterClaim(ClaimTypes.NameIdentifier);
+            return Guid.Parse(idStr);
+        }
+
+        private string ObterClaim(string type)
+        {
+            return User?.Claims?.FirstOrDefault(c => c.Type == type)?.Value;
         }
     }
 }

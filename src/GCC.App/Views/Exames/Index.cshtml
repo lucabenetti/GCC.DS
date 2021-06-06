@@ -1,0 +1,35 @@
+﻿@model IEnumerable<GCC.App.ViewModels.ExameViewModel>
+
+@{
+    ViewData["Title"] = "Exames";
+}
+
+<h1>Exames</h1>
+
+<p>
+    <a supress-by-claim-name="Exame" supress-by-claim-value="C" asp-action="Create">Cadastrar</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Nome)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Nome)
+            </td>
+            <td>
+                <a supress-by-claim-name="Exame" supress-by-claim-value="U" asp-action="Edit" asp-route-id="@item.Id">Editar</a> |
+                <a supress-by-claim-name="Exame" supress-by-claim-value="R" asp-action="Details" asp-route-id="@item.Id">Detalhes</a> |
+                <a supress-by-claim-name="Exame" supress-by-claim-value="D" asp-action="Delete" asp-route-id="@item.Id">Excluir</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

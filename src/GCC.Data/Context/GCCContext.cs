@@ -14,6 +14,7 @@ namespace GCC.Data.Context
         public DbSet<Medico> Medicos { get; set; }
         public DbSet<Paciente> Pacientes { get; set; }
         public DbSet<Secretaria> Secretarias { get; set; }
+        public DbSet<Exame> Exames { get; set; }
 
         public GCCContext(DbContextOptions options) : base(options)
         {
@@ -25,7 +26,7 @@ namespace GCC.Data.Context
 
             foreach (var relationship in modelBuilder.Model.GetEntityTypes().SelectMany(e => e.GetForeignKeys()))
             {
-                relationship.DeleteBehavior = DeleteBehavior.ClientSetNull;
+                relationship.DeleteBehavior = DeleteBehavior.Cascade;
             }
 
             base.OnModelCreating(modelBuilder);

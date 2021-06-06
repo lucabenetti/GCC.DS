@@ -20,6 +20,7 @@ namespace GCC.Data.Repository
             return await Db.Consultas.AsNoTracking()
                                      .Include(c => c.Medico)
                                      .Include(c => c.Paciente)
+                                     .Include(c => c.Exame)
                                      .FirstOrDefaultAsync(c => c.Id == id);
         }
 

@@ -3,18 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using GCC.App.Data;
 using GCC.App.ViewModels;
 using GCC.Business.Interfaces;
 using AutoMapper;
-using Microsoft.AspNetCore.Identity;
 using GCC.Business.Modelos;
 using GCC.App.Extensions;
+using Microsoft.AspNetCore.Authorization;
 
 namespace GCC.App.Controllers
 {
+    [Authorize]
     public class MedicosController : Controller
     {
         private readonly IMedicoRepository _medicoRepository;
@@ -30,11 +28,13 @@ namespace GCC.App.Controllers
             _consultaRepository = consultaRepository;
         }
 
+        [ClaimsAuthorize("Medico", "R")]
         public async Task<IActionResult> Index()
         {
             return View(_mapper.Map<IEnumerable<MedicoViewModel>>(await _medicoRepository.ObterTodos()));
         }
 
+        [ClaimsAuthorize("Medico", "R")]
         public async Task<IActionResult> Details(Guid id)
         {
             var medicoViewModel = await ObterMedicoPorId(id);
@@ -47,11 +47,13 @@ namespace GCC.App.Controllers
             return View(medicoViewModel);
         }
 
+        [ClaimsAuthorize("Medico", "C")]
         public IActionResult Create()
         {
             return View(new MedicoViewModel());
         }
 
+        [ClaimsAuthorize("Medico", "C")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(MedicoViewModel medicoViewModel)
@@ -80,7 +82,7 @@ namespace GCC.App.Controllers
                 return View(medicoViewModel);
             }
 
-            var usuarioIdentity = await _usuarioService.CadastrarUsuario(medicoViewModel.Email, medicoViewModel.Email, medicoViewModel.Senha);
+            var usuarioIdentity = await _usuarioService.CadastrarMedico(medicoViewModel.Email, medicoViewModel.Email, medicoViewModel.Senha);
             if (usuarioIdentity == null)
             {
                 ModelState.AddModelError(string.Empty, "Email já em utilização!");
@@ -93,6 +95,7 @@ namespace GCC.App.Controllers
             return RedirectToAction("Index");
         }
 
+        [ClaimsAuthorize("Medico", "U")]
         public async Task<IActionResult> Edit(Guid id)
         {
             var medicoViewModel = await ObterMedicoPorId(id);
@@ -105,6 +108,7 @@ namespace GCC.App.Controllers
             return View(medicoViewModel);
         }
 
+        [ClaimsAuthorize("Medico", "U")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(Guid id, MedicoViewModel medicoViewModel)
@@ -146,6 +150,7 @@ namespace GCC.App.Controllers
             return RedirectToAction("Index");
         }
 
+        [ClaimsAuthorize("Medico", "D")]
         public async Task<IActionResult> Delete(Guid id)
         {
             var medicoViewModel = await ObterMedicoPorId(id);
@@ -158,6 +163,7 @@ namespace GCC.App.Controllers
             return View(medicoViewModel);
         }
 
+        [ClaimsAuthorize("Medico", "D")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)

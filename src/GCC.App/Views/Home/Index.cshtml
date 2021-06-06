@@ -4,7 +4,9 @@
 
 <div class="text-center">
     <h1 class="display-4">Bem-vindo</h1>
-    <a class="btn btn-primary" asp-controller="Medicos" asp-action="Index">Medicos</a>
-    <a class="btn btn-primary" asp-controller="Pacientes" asp-action="Index">Pacientes</a>
-    <a class="btn btn-primary" asp-controller="Consultas" asp-action="Index">Consultas</a>
+    <a class="btn btn-primary" supress-by-claim-name="Medico" supress-by-claim-value="R" asp-controller="Medicos" asp-action="Index">Medicos</a>
+    <a class="btn btn-primary" supress-by-claim-name="Paciente" supress-by-claim-value="R" asp-controller="Pacientes" asp-action="Index">Pacientes</a>
+    <a class="btn btn-primary" supress-by-claim-name="Consulta" supress-by-claim-value="R" asp-controller="Consultas" asp-action="Index">Consultas</a>
+    <a class="btn btn-primary" supress-by-claim-name="Exame" supress-by-claim-value="R" asp-controller="Exames" asp-action="Index">Exames</a>
+    <a class="btn btn-primary" supress-by-claim-name="Secretaria" supress-by-claim-value="R" asp-controller="Secretarias" asp-action="Index">Secretaria</a>
 </div>

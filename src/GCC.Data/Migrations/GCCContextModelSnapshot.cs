@@ -19,6 +19,21 @@ namespace GCC.Data.Migrations
                 .HasAnnotation("ProductVersion", "5.0.5")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+            modelBuilder.Entity("ConsultaExame", b =>
+                {
+                    b.Property<Guid>("ConsultaId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("ExameId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("ConsultaId", "ExameId");
+
+                    b.HasIndex("ExameId");
+
+                    b.ToTable("ConsultaExame");
+                });
+
             modelBuilder.Entity("GCC.Business.Modelos.Consulta", b =>
                 {
                     b.Property<Guid>("Id")
@@ -34,11 +49,17 @@ namespace GCC.Data.Migrations
                     b.Property<Guid>("MedicoId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("Observacao")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<Guid>("PacienteId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<bool>("Realizada")
                         .HasColumnType("bit");
+
+                    b.Property<string>("Receita")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -47,6 +68,21 @@ namespace GCC.Data.Migrations
                     b.HasIndex("PacienteId");
 
                     b.ToTable("Consulta");
+                });
+
+            modelBuilder.Entity("GCC.Business.Modelos.Exame", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Nome")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Exame");
                 });
 
             modelBuilder.Entity("GCC.Business.Modelos.Medico", b =>
@@ -161,16 +197,33 @@ namespace GCC.Data.Migrations
                     b.ToTable("Secretaria");
                 });
 
+            modelBuilder.Entity("ConsultaExame", b =>
+                {
+                    b.HasOne("GCC.Business.Modelos.Consulta", null)
+                        .WithMany()
+                        .HasForeignKey("ConsultaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("GCC.Business.Modelos.Exame", null)
+                        .WithMany()
+                        .HasForeignKey("ExameId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("GCC.Business.Modelos.Consulta", b =>
                 {
                     b.HasOne("GCC.Business.Modelos.Medico", "Medico")
                         .WithMany()
                         .HasForeignKey("MedicoId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("GCC.Business.Modelos.Paciente", "Paciente")
                         .WithMany()
                         .HasForeignKey("PacienteId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Medico");

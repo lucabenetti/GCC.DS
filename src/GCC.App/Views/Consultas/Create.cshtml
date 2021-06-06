@@ -27,12 +27,27 @@
             <div class="form-group">
                 <label asp-for="Data" class="control-label"></label>
                 <input type="datetime-local" value="@string.Format("{0:yyyy-MM-ddTHH:mm}", DateTime.Today)" asp-for="Data" class="form-control" />
-                <span asp-validation-for="Data" class="text-danger"></span>
+                <span asp-validation-for="PacienteId" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Duracao" class="control-label"></label>
                 <input type="time" asp-for="Duracao" class="form-control" />
                 <span asp-validation-for="Duracao" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Exames" class="control-label"></label><br />
+                <select id="ExamesDropdown" asp-for="ExamesId" asp-items="@(new SelectList(Model.Exames, "Id", "Nome"))" multiple class="form-control"></select>
+                <span asp-validation-for="Exames" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Receita" class="control-label"></label>
+                <textarea class="form-control" asp-for="Receita" rows="3"></textarea>
+                <span asp-validation-for="Receita" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Observacao" class="control-label"></label>
+                <textarea class="form-control" asp-for="Observacao" rows="3"></textarea>
+                <span asp-validation-for="Observacao" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Agendar" class="btn btn-primary" />

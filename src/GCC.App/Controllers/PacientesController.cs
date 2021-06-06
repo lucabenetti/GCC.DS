@@ -13,9 +13,11 @@ using GCC.Business.Interfaces;
 using Microsoft.AspNet.Identity.EntityFramework;
 using GCC.Business.Modelos;
 using GCC.App.Extensions;
+using Microsoft.AspNetCore.Authorization;
 
 namespace GCC.App.Controllers
 {
+    [Authorize]
     public class PacientesController : Controller
     {
         private readonly IPacienteRepository _pacienteRepository;
@@ -31,11 +33,13 @@ namespace GCC.App.Controllers
             _consultaRepository = consultaRepository;
         }
 
+        [ClaimsAuthorize("Paciente", "R")]
         public async Task<IActionResult> Index()
         {
             return View(_mapper.Map<IEnumerable<PacienteViewModel>>(await _pacienteRepository.ObterTodos()));
         }
 
+        [ClaimsAuthorize("Paciente", "R")]
         public async Task<IActionResult> Details(Guid id)
         {
             var pacienteViewModel = await ObterPacientePorId(id);
@@ -48,11 +52,13 @@ namespace GCC.App.Controllers
             return View(pacienteViewModel);
         }
 
+        [ClaimsAuthorize("Paciente", "C")]
         public IActionResult Create()
         {
             return View();
         }
 
+        [ClaimsAuthorize("Paciente", "C")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(PacienteViewModel pacienteViewModel)
@@ -72,7 +78,7 @@ namespace GCC.App.Controllers
                 return View(pacienteViewModel);
             }
 
-            var usuarioIdentity = await _usuarioService.CadastrarUsuario(pacienteViewModel.Email, pacienteViewModel.Email, pacienteViewModel.Senha);
+            var usuarioIdentity = await _usuarioService.CadastrarPaciente(pacienteViewModel.Email, pacienteViewModel.Email, pacienteViewModel.Senha);
             if (usuarioIdentity == null) 
             {
                 ModelState.AddModelError(string.Empty, "Email já em utilização!");
@@ -85,6 +91,7 @@ namespace GCC.App.Controllers
             return RedirectToAction("Index");
         }
 
+        [ClaimsAuthorize("Paciente", "U")]
         public async Task<IActionResult> Edit(Guid id)
         {
             var pacienteViewModel = await ObterPacientePorId(id);
@@ -97,6 +104,7 @@ namespace GCC.App.Controllers
             return View(pacienteViewModel);
         }
 
+        [ClaimsAuthorize("Paciente", "U")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(Guid id, PacienteViewModel pacienteViewModel)
@@ -132,6 +140,7 @@ namespace GCC.App.Controllers
             return RedirectToAction("Index");
         }
 
+        [ClaimsAuthorize("Paciente", "D")]
         public async Task<IActionResult> Delete(Guid id)
         {
             var pacienteViewModel = await ObterPacientePorId(id);
@@ -144,6 +153,7 @@ namespace GCC.App.Controllers
             return View(pacienteViewModel);
         }
 
+        [ClaimsAuthorize("Paciente", "D")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)

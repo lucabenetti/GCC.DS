@@ -1,0 +1,23 @@
+﻿@model GCC.App.ViewModels.ExameViewModel
+
+@{
+    ViewData["Title"] = "Detalhes";
+}
+
+<h1>Detalhes</h1>
+
+<div>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Nome)
+        </dt>
+        <dd class="col-sm-10">
+            @Model.Nome
+        </dd>
+    </dl>
+</div>
+<div>
+    <a supress-by-claim-name="Exame" supress-by-claim-value="U" asp-action="Edit" asp-route-id="@Model.Id">Editar</a> |
+    <a asp-action="Index">Voltar</a>
+</div>
