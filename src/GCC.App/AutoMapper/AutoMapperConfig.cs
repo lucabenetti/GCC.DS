@@ -14,6 +14,7 @@ namespace GCC.App.AutoMapper
             CreateMap<Medico, MedicoViewModel>().ReverseMap();
             CreateMap<Paciente, PacienteViewModel>().ReverseMap();
             CreateMap<Exame, ExameViewModel>().ReverseMap();
+            CreateMap<Secretaria, SecretariaViewModel>().ReverseMap();
         }
     }
 }

@@ -1,0 +1,69 @@
+﻿@model IEnumerable<GCC.App.ViewModels.SecretariaViewModel>
+@using GCC.Business.Enums
+@using GCC.App.Extensions
+
+
+@{
+    ViewData["Title"] = "Secretarias";
+}
+
+<h1>Secretarias</h1>
+
+<p>
+    <a asp-action="Create">Registrar secretarias</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Nome)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CPF)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Sexo)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Endereco)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Telefone)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DataNascimento)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Nome)
+                </td>
+                <td>
+                    @item.CPF.FormataCPF()
+                </td>
+                <td>
+                    @Enum.GetName(typeof(SexoEnum), item.Sexo)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Endereco)
+                </td>
+                <td>
+                    @item.Telefone.FormataTelefone()
+                </td>
+                <td>
+                    @item.DataNascimento.ToShortDateString()
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Editar</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id">Detalhes</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Excluir</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

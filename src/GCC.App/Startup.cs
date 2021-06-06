@@ -6,7 +6,6 @@ using GCC.Data.Repository;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc.DataAnnotations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -57,6 +56,7 @@ namespace GCC.App
             services.AddScoped<IMedicoRepository, MedicoRepository>();
             services.AddScoped<IPacienteRepository, PacienteRepository>();
             services.AddScoped<IExameRepository, ExameRepository>();
+            services.AddScoped<ISecretariaRepository, SecretariaRepository>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
