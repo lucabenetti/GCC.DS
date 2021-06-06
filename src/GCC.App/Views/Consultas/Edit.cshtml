@@ -40,6 +40,16 @@
                 <select id="ExamesDropdown" asp-for="ExamesId" asp-items="@(new SelectList(Model.Exames, "Id", "Nome"))" multiple class="form-control"></select>
                 <span asp-validation-for="Exames" class="text-danger"></span>
             </div>
+            <div class="form-group">
+                <label asp-for="Receita" class="control-label"></label>
+                <textarea class="form-control" asp-for="Receita" rows="3"></textarea>
+                <span asp-validation-for="Receita" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Observacao" class="control-label"></label>
+                <textarea class="form-control" asp-for="Observacao" rows="3"></textarea>
+                <span asp-validation-for="Observacao" class="text-danger"></span>
+            </div>
             <div class="form-group form-check">
                 <label class="form-check-label">
                     <input class="form-check-input" asp-for="Realizada" /> @Html.DisplayNameFor(model => model.Realizada)

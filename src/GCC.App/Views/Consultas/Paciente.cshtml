@@ -1,0 +1,59 @@
+﻿@model IEnumerable<GCC.App.ViewModels.ConsultaViewModel>
+
+@{
+    ViewData["Title"] = "Histórico";
+}
+
+<h1>Consultas - @ViewBag.Nome</h1>
+
+<p>
+    <a asp-action="Create">Agendar</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Data)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Paciente)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Medico)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Duracao)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Realizada)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @item.Data.ToString("g")
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Paciente.Nome)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Medico.Nome)
+            </td>
+            <td>
+                @item.Duracao.ToString(@"hh\:mm")
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Realizada)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Editar</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Detalhes</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Excluir</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

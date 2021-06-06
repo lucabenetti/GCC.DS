@@ -38,9 +38,19 @@ namespace GCC.App.Controllers
             return View(_mapper.Map<IEnumerable<ConsultaViewModel>>(await _consultaRepository.ObtenhaConsultasMedicoPaciente()));
         }
 
+        public async Task<IActionResult> Paciente(Guid id)
+        {
+            var paciente = await _pacienteRepository.ObterPorId(id);
+            ViewBag.Nome = paciente.Nome;
+            return View(_mapper.Map<IEnumerable<ConsultaViewModel>>(await _consultaRepository.ObtenhaConsultasPaciente(id)));
+        }
+
         public async Task<IActionResult> Details(Guid id)
         {
             var consultaViewModel = await ObterConsultaPorId(id);
+            consultaViewModel = await PopularMedicos(consultaViewModel);
+            consultaViewModel = await PopularPacientes(consultaViewModel);
+            consultaViewModel = await PopularExames(consultaViewModel);
 
             if (consultaViewModel == null)
             {
@@ -146,6 +156,8 @@ namespace GCC.App.Controllers
         public async Task<IActionResult> Delete(Guid id)
         {
             var consultaViewModel = await ObterConsultaPorId(id);
+            consultaViewModel = await PopularMedicos(consultaViewModel);
+            consultaViewModel = await PopularExames(consultaViewModel);
 
             if (consultaViewModel == null)
             {

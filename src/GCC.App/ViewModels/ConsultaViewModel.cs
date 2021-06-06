@@ -31,7 +31,18 @@ namespace GCC.App.ViewModels
         public ProntuarioViewModel Prontuario { get; set; }
         public PacienteViewModel Paciente { get; set; }
         public MedicoViewModel Medico { get; set; }
+        public string Receita { get; set; }
+        public string Observacao { get; set; }
         public List<Guid> ExamesId { get; set; }
+
+        [DisplayName("Exames")]
+        public string ExamesDescricao { 
+            get {
+                var examesNome = Exames.Select(e => e.Nome).ToArray();
+                return string.Join(", ", examesNome); 
+            } 
+        }
+
         public IEnumerable<ExameViewModel> Exames { get; set; }
         public IEnumerable<PacienteViewModel> Pacientes { get; set; }
         public IEnumerable<MedicoViewModel> Medicos { get; set; }
