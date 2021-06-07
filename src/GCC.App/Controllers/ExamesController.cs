@@ -8,6 +8,7 @@ using AutoMapper;
 using GCC.Business.Modelos;
 using Microsoft.AspNetCore.Authorization;
 using GCC.App.Extensions;
+using System.Linq;
 
 namespace GCC.App.Controllers
 {
@@ -142,6 +143,14 @@ namespace GCC.App.Controllers
             if (exameViewModel == null)
             {
                 return NotFound();
+            }
+
+            var exame = await _exameRepository.ObterExame(id);
+
+            if (exame.Consulta.Any())
+            {
+                ModelState.AddModelError(string.Empty, "Não é possível realizar exclusão pois existem consultas associadas a este exame!");
+                return View(exameViewModel);
             }
 
             await _exameRepository.Remover(id);

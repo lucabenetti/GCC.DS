@@ -38,6 +38,12 @@ namespace GCC.App.ViewModels
         [DisplayName("Exames")]
         public string ExamesDescricao { 
             get {
+                
+                if(Exames == null)
+                {
+                    return string.Empty;
+                }
+
                 var examesNome = Exames.Select(e => e.Nome).ToArray();
                 return string.Join(", ", examesNome); 
             } 
